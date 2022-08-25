@@ -1,0 +1,13 @@
+Package: rohproc
+Type: Package
+Title: Summarize and process ROH outcomes
+Version: 0.0.1
+Author: Francisco C. Ceballos
+Maintainer: FCC <ceballoscamina@gmail>
+Description: Functions to process ROH outcomes,
+License:
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Depends: 
+    R (>= 2.10)
