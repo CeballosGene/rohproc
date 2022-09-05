@@ -334,10 +334,6 @@ rhc_data_org<-function(POP){
   }
   return(DataFDel)
 }
-
-
-
-
 #library(roxygen2)
 #roxygenise()
 
