@@ -1,3 +1,4 @@
+##############################
 #' ROH variables
 #'
 #'This script obtains main variables from a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
@@ -23,6 +24,7 @@ roh_sum_id<-function(data){
   results<-as.data.frame(results)
   return(results)
 }
+##############################
 #' Summarize by Population
 #'
 #'This script summarize all the outcome of roh_sum_id by population.
@@ -61,7 +63,7 @@ roh_sum_pop<-function(data_1,data_2){
   mer<-as.data.frame(mer)
   return(mer)
 }
-
+##############################
 #' Figure of the total sum of different ROH lenghts
 #'
 #'This script creates a figure of Sum of ROH for different length ROH classes.
@@ -96,7 +98,7 @@ ROH_class_fig<-function(data_1,data_2,data_3){
     ggplot2::geom_point(ggplot2::aes(color=cont))+
     ggplot2::theme_light()
 }
-
+##############################
 #' RAW Data: Fig total Sum of ROH size classes.
 #'
 #'This script creates a figure of Sum of ROH for different length ROH classes.
@@ -128,7 +130,7 @@ ROH_class_data<-function(data_1,data_2,data_3){
   df<-df[order(df$cont),]
   return(df)
 }
-
+##############################
 #' Number vs Sum of ROH
 #'
 #'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
@@ -163,8 +165,6 @@ n_vs_sum<-function(data_1,data_2,simul=TRUE){
     ggplot2::geom_point()+
     ggplot2::theme_light()
 }
-
-
 ##############################
 # FUNCTIONS ROHi ----
 roh_island<-function(pop,chr,p1,p2){
@@ -182,7 +182,6 @@ poisson.roh_island<-function(pop,chr,p1,p2){
   return(n)
 }
 ##############################
-
 #' Islands of ROH
 #'
 #'This script searches for ROH islands in a population
@@ -191,7 +190,7 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 #' @return A table with the ROH islands
 #' @export
 #'
-get_RHOi<-function(POP,ChroNumber){
+get_RHOi<-function(POP,ChroNumber,population){
   nSNP=(mean(POP$NSNP[POP$KB>=1000 & POP$KB<=1100]))*0.1
   SizeWindow=10000
   if(ChroNumber==1){lenChro=250000000}
@@ -233,11 +232,112 @@ get_RHOi<-function(POP,ChroNumber){
   Chr<-rep(1,length(data.re$pos1))
   ROHi<-data.frame(cbind(Chr,data.re))
   ROHi<-dplyr::mutate(ROHi,len=(pos2-pos1)/1000000)
+  ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
   ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,nsnp,n.ind,per.ind)
   colnames(ROHi)<-c("Chr","Start","End","Length","N_SNP","N_Individuals","%_Individuals")
   return(ROHi)
 }
 ################################
+#' Summarize ROHi by Population
+#'
+#'This script summarize all the outcome of roh_sum_id by population.
+#' @param mypath Path to the folder with the outcomes of the get_RHOi() function.
+#' @return A data frame with different variables summarize for each population.
+#' @export
+#'
+rohi_sum_pop<-function(mypath){
+  files_list <- list.files(path=mypath, full.names=TRUE)
+  dat <- data.frame()
+  for (i in 1:length(files_list)) {
+    dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
+  }
+  dat<-dat|>
+    dplyr::group_by(Population)|>
+    dplyr::summarise(mean_length=mean(Length),
+                     sd_length=sd(Length),
+                     median_Length=median(Length),
+                     iqr_Length=IQR(Length),
+                     max_Length=max(Length))
+  out<-as.data.frame(dat)
+  return(out)
+}
+##############################
+# FUNCTIONS RHZ ----
+RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
+  Case1<-(blacklistChro$Start>Start & blacklistChro$Start<End) | (blacklistChro$Stop>Start & blacklistChro$Stop<End)
+  Case2<-Start>blacklistChro$Start & End<blacklistChro$Stop
+  if(any(Case2))return(data.frame(Chro=c(), IID=c(),V1=c(), V2=c()))
+  if(any(Case1)){
+    blacklistChroCut<-blacklistChro[Case1,]
+    blacklistChroCut<-blacklistChroCut[order(blacklistChroCut$Start),]
+    Res<-data.frame(Chro=Chro, IID=IID,V1=c(Start,blacklistChroCut$Stop), V2=c(blacklistChroCut$Start,End))
+    if(Start>blacklistChroCut$Start[1])Res<-Res[-1,]
+    if(End<blacklistChroCut$Stop[length(blacklistChroCut$Stop)])Res<-Res[-nrow(Res),]
+    return(Res)
+  }else{
+    return(data.frame(Chro=Chro, IID=IID,V1=Start, V2=End))
+  }
+}
+##############################
+#' RUNS OF HETEROZYGOSITY i
+#'
+#'This script prepares the dataset to search for runs of heterozygosity in the population.
+#' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
+#' @return A file ready to be used to fing RHZ
+#' @export
+rhc_data_org<-function(POP){
+  Cmt=1
+  for(Chro in 1:22){
+    for(Ind in unique(POP$IID)){
+      DataChro<-data.frame(X1=c(),X2=c())
+      Balise<-POP$CHR==Chro & POP$IID==Ind
+      if(any(Balise)){
+        if(positions[positions$chr==Chro,"snp.P1"]!=POP[Balise,"POS1"][1]){
+          Begin<-cbind(positions[positions$chr==Chro,"snp.P1"], POP[Balise,"POS1"][1]-1)
+          DataChro<-rbind(DataChro,Begin)
+        }
+        if(nrow(POP[Balise,])>1){
+          DataChro2<-cbind(POP[Balise,"POS2"][1:c(length(POP[Balise,"POS2"])-1)]+1,POP[Balise,"POS1"][2:length(POP[Balise,"POS1"])]-1)
+          DataChro<-rbind(DataChro,DataChro2)
+        }
+        if(positions[positions$chr==Chro,"snp.P2"]!=POP[Balise,"POS2"][length(POP[Balise,"POS2"])]){
+          End<-cbind( POP[Balise,"POS2"][length(POP[Balise,"POS2"])]+1, positions[positions$chr==Chro,"snp.P2"])
+          DataChro<-rbind(DataChro,End)
+        }
+        PosCentro<-which(DataChro[,1]<positions[positions$chr==Chro,"cen.pos1"] & DataChro[,2]>positions[positions$chr==Chro,"cen.pos2"])
+        if(length(PosCentro)==1){
+          DataCentro<-rbind(cbind(DataChro[PosCentro,1], positions[positions$chr==Chro,"cen.pos1"]),cbind(positions[positions$chr==Chro,"cen.pos2"],DataChro[PosCentro,2]))
+          DataChro<-DataChro[-PosCentro,]
+          DataChro<-rbind(DataChro,DataCentro)
+          DataChro<-DataChro[order(DataChro[,1]),]
+        }
+        if(length(PosCentro)>1){
+          cat("Error :", Chro)
+        }
+        DataChro<-data.frame(Chro=Chro,IID=Ind,DataChro)
+        if(Cmt==1)DataF<-DataChro
+        else DataF<-rbind(DataF,DataChro)
+        Cmt=Cmt+1
+      }
+    }
+  }
+  Cmt<-1
+  for(Chro in 1:22){
+    blacklistChro<-blacklist[blacklist$Chr==Chro,]
+    DataFChro<-DataF[DataF$Chro==Chro,]
+    for(eachRoh in 1:nrow(DataFChro)){
+      DataTemp<-RemoveBlackList(DataFChro$V1[eachRoh], DataFChro$V2[eachRoh], DataFChro$Chro[eachRoh],DataFChro$IID[eachRoh],blacklistChro)
+      if(Cmt==1)DataFDel<-DataTemp
+      else DataFDel<-rbind(DataFDel,DataTemp)
+      Cmt<-Cmt+1
+    }
+  }
+  return(DataFDel)
+}
+
+
+
+
 #library(roxygen2)
 #roxygenise()
 
