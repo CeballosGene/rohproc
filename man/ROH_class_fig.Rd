@@ -2,12 +2,12 @@
 % Please edit documentation in R/FUNCT.R
 \name{ROH_class_fig}
 \alias{ROH_class_fig}
-\title{Figure of the total sum of different ROH lenghts}
+\title{Figure of the total sum of different ROH lengths}
 \usage{
 ROH_class_fig(data_1, data_2, data_3)
 }
 \arguments{
-\item{data_1}{The outcome of the function roh_sum_id.}
+\item{data_1}{The outcome of the function roh_summ_id.}
 
 \item{data_2}{A file with two columns: IID, pop. pop must contain each individula's population}
 

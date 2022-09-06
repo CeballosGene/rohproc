@@ -233,14 +233,14 @@ get_RHOi<-function(POP,ChroNumber,population){
   ROHi<-data.frame(cbind(Chr,data.re))
   ROHi<-dplyr::mutate(ROHi,len=(pos2-pos1)/1000000)
   ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
-  ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,nsnp,n.ind,per.ind)
-  colnames(ROHi)<-c("Chr","Start","End","Length","N_SNP","N_Individuals","%_Individuals")
+  ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,nsnp,n.ind,per.ind,pop)
+  colnames(ROHi)<-c("Chr","Start","End","Length","N_SNP","N_Individuals","P_Individuals","Population")
   return(ROHi)
 }
 ################################
 #' Summarize ROHi by Population
 #'
-#'This script summarize all the outcome of roh_sum_id by population.
+#'This script summarize all the outcome of get_ROHi by population.
 #' @param mypath Path to the folder with the outcomes of the get_RHOi() function.
 #' @return A data frame with different variables summarize for each population.
 #' @export
@@ -253,11 +253,27 @@ rohi_sum_pop<-function(mypath){
   }
   dat<-dat|>
     dplyr::group_by(Population)|>
-    dplyr::summarise(mean_length=mean(Length),
+    dplyr::summarise(Number=length(Chr),
+                     mean_length=mean(Length),
                      sd_length=sd(Length),
                      median_Length=median(Length),
                      iqr_Length=IQR(Length),
-                     max_Length=max(Length))
+                     max_Length=max(Length),
+                     mean_N_SNP=mean(N_SNP),
+                     sd_N_SNP=sd(N_SNP),
+                     median_N_SNP=median(N_SNP),
+                     iqr_N_SNP=IQR(N_SNP),
+                     max_N_SNP=max(N_SNP),
+                     mean_N_Individuals=mean(N_Individuals),
+                     sd_N_Individuals=sd(N_Individuals),
+                     median_N_Individuals=median(N_Individuals),
+                     iqr_N_Individuals=IQR(N_Individuals),
+                     max_N_Individuals=max(N_Individuals),
+                     mean_P_Individuals=mean(P_Individuals),
+                     sd_P_Individuals=sd(P_Individuals),
+                     median_P_Individuals=median(P_Individuals),
+                     iqr_P_Individuals=IQR(P_Individuals),
+                     max_P_Individuals=max(P_Individuals))
   out<-as.data.frame(dat)
   return(out)
 }
@@ -279,13 +295,15 @@ RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
   }
 }
 ##############################
-#' RUNS OF HETEROZYGOSITY i
+#' RUNS OF HETEROZYGOSITY I
 #'
 #'This script prepares the dataset to search for runs of heterozygosity in the population.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
 #' @return A file ready to be used to fing RHZ
 #' @export
 rhc_data_org<-function(POP){
+  positions=help_RHZ[[1]]
+  blacklist=help_RHZ[[2]]
   Cmt=1
   for(Chro in 1:22){
     for(Ind in unique(POP$IID)){
@@ -332,10 +350,126 @@ rhc_data_org<-function(POP){
       Cmt<-Cmt+1
     }
   }
-  return(DataFDel)
+  colnames(DataFDel) <- c("CH","iid","pos1","pos2")
+  cluster<-DataFDel
+  cluster$KB<-cluster$pos2 - cluster$pos1
+  return(cluster)
 }
+##############################
+#' RUNS OF HETEROZYGOSITY II
+#'
+#'This script searches for Regions of Heterozygosity in a population
+#' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
+#' @param ChroNumber Chromosome number
+#' @return A table with the RHZ
+#' @export
+#'
+get_RHZ<-function(DF,ChroNumber,PR){
+  SizeWindow=10000
+  if(ChroNumber==1){lenChro=250000000}
+  if(ChroNumber==2){lenChro=250000000}
+  if(ChroNumber==3){lenChro=200000000}
+  if(ChroNumber==4){lenChro=191000000}
+  if(ChroNumber==5){lenChro=182000000}
+  if(ChroNumber==6){lenChro=171000000}
+  if(ChroNumber==7){lenChro=160000000}
+  if(ChroNumber==8){lenChro=146000000}
+  if(ChroNumber==9){lenChro=139000000}
+  if(ChroNumber==10){lenChro=133900000}
+  if(ChroNumber==11){lenChro=136000000}
+  if(ChroNumber==12){lenChro=134000000}
+  if(ChroNumber==13){lenChro=115000000}
+  if(ChroNumber==14){lenChro=108000000}
+  if(ChroNumber==15){lenChro=102000000}
+  if(ChroNumber==16){lenChro=91000000}
+  if(ChroNumber==17){lenChro=84000000}
+  if(ChroNumber==18){lenChro=81000000}
+  if(ChroNumber==19){lenChro=59000000}
+  if(ChroNumber==20){lenChro=64000000}
+  if(ChroNumber==21){lenChro=49000000}
+  if(ChroNumber==22){lenChro=52000000}
+  data.n = apply(data.frame(seq(0,lenChro-SizeWindow,SizeWindow), seq(SizeWindow,lenChro,SizeWindow)), MARGIN=1,
+                 function(x,y,z,a) poisson.roh_island(DF, ChroNumber, x[1], x[2]))
+  data.p = apply(data.frame(seq(0,lenChro-SizeWindow,SizeWindow), seq(SizeWindow,lenChro,SizeWindow)), MARGIN=1,
+                 function(x,y,z,a) roh_island(DF, ChroNumber, x[1], x[2]))
+  x<-seq(1:round(lenChro/SizeWindow))
+  pos<-(x*SizeWindow)
+  prop<-data.p*100
+  data<-data.frame(cbind(x,data.n,prop,pos,len))
+  data.p<-subset(data,data$prop>=PR)
+  data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
+    dplyr::summarise(pos1=min(pos),pos2=max(pos),len=sum(len),n.ind=mean(data.n),per.ind=mean(prop))
+  Chr<-rep(ChroNumber,length(data.re$pos1))
+  OUT<-data.frame(cbind(Chr,data.re))
+  OUT<-dplyr::mutate(OUT,len=(pos2-pos1)/1000000)
+  OUT<-dplyr::mutate(ROHi,pop=rep(population,length(OUT$Chr)))
+  OUT<-dplyr::select(OUT,Chr,pos1,pos2,len,n.ind,per.ind,pop)
+  colnames(OUT)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
+  return(OUT)
+}
+################################
+#' Summarize RHZ by Population
+#'
+#'This script summarize all the outcome of RHZ by population.
+#' @param mypath Path to the folder with the outcomes of the get_RHZ() function.
+#' @return A data frame with different variables summarize for each population.
+#' @export
+#'
+rohi_sum_pop<-function(mypath){
+  files_list <- list.files(path=mypath, full.names=TRUE)
+  dat <- data.frame()
+  for (i in 1:length(files_list)) {
+    dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
+  }
+  dat<-dat|>
+    dplyr::group_by(Population)|>
+    dplyr::summarise(Number=length(Chr),
+                     mean_length=mean(Length),
+                     sd_length=sd(Length),
+                     median_Length=median(Length),
+                     iqr_Length=IQR(Length),
+                     max_Length=max(Length),
+                     mean_N_Individuals=mean(N_Individuals),
+                     sd_N_Individuals=sd(N_Individuals),
+                     median_N_Individuals=median(N_Individuals),
+                     iqr_N_Individuals=IQR(N_Individuals),
+                     max_N_Individuals=max(N_Individuals),
+                     mean_P_Individuals=mean(P_Individuals),
+                     sd_P_Individuals=sd(P_Individuals),
+                     median_P_Individuals=median(P_Individuals),
+                     iqr_P_Individuals=IQR(P_Individuals),
+                     max_P_Individuals=max(P_Individuals))
+  out<-as.data.frame(dat)
+  return(out)
+}
+################################
+#' Searching for Protein Coding Genes
+#'
+#'This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package
+#' @param DATA A file obtained from the functions get_ROHi or get_RHZ.
+#' @return A table with the Protein coding genes
+#' @export
+get_Prot<-function(DATA){
+  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="www.ensembl.org")
+  attributes = biomaRt::listAttributes(mart)
+  attributes <- c("ensembl_gene_id","chromosome_name","start_position","end_position",
+                  "gene_biotype","external_gene_name","description")
+  filters <- c("chromosome_name","start","end")
+  ann<-list()
+  gen<-list()
+  for (i in seq(1,length(DATA$Chr),1)){
+    ann[[i]]<-list(chromosome=DATA[i,1],start=DATA[i,2],end=DATA[i,3])
+    gen[[i]]<-biomaRt::getBM(attributes=attributes, filters=filters, values=ann[[i]], mart=mart)
+    gen[[i]]<-gen[[i]][gen[[i]]$gene_biotype=="protein_coding",]
+  }
+  genes<- plyr::ldply(gen, data.frame)
+  return(genes)
+}
+#####################################
+
 #library(roxygen2)
 #roxygenise()
+
 
 
 

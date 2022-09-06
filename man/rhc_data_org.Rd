@@ -2,7 +2,7 @@
 % Please edit documentation in R/FUNCT.R
 \name{rhc_data_org}
 \alias{rhc_data_org}
-\title{RUNS OF HETEROZYGOSITY i}
+\title{RUNS OF HETEROZYGOSITY I}
 \usage{
 rhc_data_org(POP)
 }

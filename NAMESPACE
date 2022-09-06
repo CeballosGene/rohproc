@@ -2,7 +2,9 @@
 
 export(ROH_class_data)
 export(ROH_class_fig)
+export(get_Prot)
 export(get_RHOi)
+export(get_RHZ)
 export(n_vs_sum)
 export(rhc_data_org)
 export(roh_sum_id)

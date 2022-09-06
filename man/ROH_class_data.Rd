@@ -7,7 +7,7 @@
 ROH_class_data(data_1, data_2, data_3)
 }
 \arguments{
-\item{data_1}{The outcome of the function roh_sum_id.}
+\item{data_1}{The outcome of the function roh_summ_id.}
 
 \item{data_2}{A file with two columns: IID, pop. pop must contain each individual's population}
 
@@ -17,6 +17,6 @@ ROH_class_data(data_1, data_2, data_3)
 A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 }
 \description{
-This script creates a figure of Sum of ROH for different length ROH classes.
+This script creates a table with the raw data used in the function ROH_class_fig.
 The classification is made by continents or regions
 }
