@@ -7,7 +7,7 @@
 #' @return A data frame with different variables.
 #' @export
 #'
-roh_sum_id<-function(data){
+roh_summ_id<-function(data){
   results = data |> dplyr::group_by(IID) |>
     dplyr::summarise(Sum_long=sum(KB[KB>=1500]),
                      N_long=length(KB[KB>=1500]),
@@ -27,13 +27,13 @@ roh_sum_id<-function(data){
 ##############################
 #' Summarize by Population
 #'
-#'This script summarize all the outcome of roh_sum_id by population.
-#' @param data_1 The outcome of the function roh_sum_id.
+#'This script summarize all the outcome of roh_summ_id by population.
+#' @param data_1 The outcome of the function roh_summ_id.
 #' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-roh_sum_pop<-function(data_1,data_2){
+roh_summ_pop<-function(data_1,data_2){
   mer<-merge(data_1,data_2,by="IID") |>
     dplyr::group_by(pop)|>
     dplyr::summarise(mean_Sum_long=mean(Sum_long),
@@ -64,11 +64,11 @@ roh_sum_pop<-function(data_1,data_2){
   return(mer)
 }
 ##############################
-#' Figure of the total sum of different ROH lenghts
+#' Figure of the total sum of different ROH lengths
 #'
 #'This script creates a figure of Sum of ROH for different length ROH classes.
 #'The classification is made by continents or regions
-#' @param data_1 The outcome of the function roh_sum_id.
+#' @param data_1 The outcome of the function roh_summ_id.
 #' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
@@ -101,9 +101,9 @@ ROH_class_fig<-function(data_1,data_2,data_3){
 ##############################
 #' RAW Data: Fig total Sum of ROH size classes.
 #'
-#'This script creates a figure of Sum of ROH for different length ROH classes.
+#'This script creates a table with the raw data used in the function ROH_class_fig.
 #'The classification is made by continents or regions
-#' @param data_1 The outcome of the function roh_sum_id.
+#' @param data_1 The outcome of the function roh_summ_id.
 #' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
 #' @return A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
@@ -138,11 +138,14 @@ ROH_class_data<-function(data_1,data_2,data_3){
 #'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
 #' @param data_1 The outcome of the function roh_sum_id.
 #' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
-#' @param simul If true simulations of number and sum of ROH for differnet consanguinity matings is added.
+#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param color Factor variable to be introduce as the color guide: aes(color=,): pop or cont
+#' @param shape Factor variable to be introduce as the shape guide: aes(shape=,): pop or cont
+#' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
 #'
-n_vs_sum<-function(data_1,data_2,simul=TRUE){
+n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
   Sum_long<-rnorm(5000,0.0152,0.009)*2881033
   N_long<-rnorm(5000,4.81,2.5)
   data_sc<-as.data.frame(cbind(Sum_long,N_long));data_sc[data_sc < 0] <- 0
@@ -156,8 +159,9 @@ n_vs_sum<-function(data_1,data_2,simul=TRUE){
   N_long<-rnorm(5000,40.7,4.5)
   data_in<-as.data.frame(cbind(Sum_long,N_long))
   mer<-merge(data_1,data_2,by="IID")
-  ggplot2::ggplot(mer,ggplot2::aes(x=Sum_long,y=N_long,color=pop,shape=pop))+
-    geom_abline(intercept= 4.184, slope=0.000049, linetype="dashed") +
+  mer<-merge(mer,data_3,by="IID")
+  ggplot2::ggplot(mer,ggplot2::aes(x=Sum_long,y=N_long,color={{color}},shape={{shape}}))+
+    ggplot2::geom_abline(intercept= 0.4866, slope=0.000738, linetype="dashed") +
     {if(simul)ggplot2::geom_point(data=data_sc, color="olivedrab1",shape=20,alpha = 0.25)}+
     {if(simul)ggplot2::geom_point(data=data_fc,color="yellow1",shape=20,alpha=0.25)}+
     {if(simul)ggplot2::geom_point(data=data_av,color="orangered1",shape=20,alpha=0.25)}+
@@ -166,6 +170,28 @@ n_vs_sum<-function(data_1,data_2,simul=TRUE){
     ggplot2::theme_light()
 }
 ##############################
+# FIS vs FROH
+#'
+#'This script creates a scatter plot of FIS vs FROH.
+#' @param data_1 The outcome of the function roh_sum_id.
+#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
+#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param color Factor variable to be introduce as the color guide: aes(color=,): pop or cont
+#' @param shape Factor variable to be introduce as the shape guide: aes(shape=,): pop or cont
+#' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
+#' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
+#' @export
+#'
+fis_vs_froh<-function(data_1,data_2,data_3,color,shape){
+  mer<-merge(data_1,data_2,by="IID")
+  mer<-merge(mer,data_3,by="IID")
+  ggplot2::ggplot(data, ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
+    ggplot2::geom_point()+
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed",color="red") +
+    ggplot2::geom_abline(slope=1,intercept = 0, linetype = "dashed",color="red")+
+    ggplot2::theme_light()
+}
+############################
 # FUNCTIONS ROHi ----
 roh_island<-function(pop,chr,p1,p2){
   names(pop)<-tolower(names(pop))
@@ -245,7 +271,7 @@ get_RHOi<-function(POP,ChroNumber,population){
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rohi_sum_pop<-function(mypath){
+rohi_summ_pop<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
@@ -359,8 +385,10 @@ rhc_data_org<-function(POP){
 #' RUNS OF HETEROZYGOSITY II
 #'
 #'This script searches for Regions of Heterozygosity in a population
-#' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
+#' @param DF The data frame obtained from the function rhc_data_org.
 #' @param ChroNumber Chromosome number
+#' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
+#' in that window. 90%: 10% of people with homozygous regions in that window.
 #' @return A table with the RHZ
 #' @export
 #'
@@ -415,7 +443,7 @@ get_RHZ<-function(DF,ChroNumber,PR){
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rohi_sum_pop<-function(mypath){
+rhz_summ_pop<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
