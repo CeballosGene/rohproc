@@ -1,10 +1,10 @@
 Package: rohproc
 Type: Package
-Title: R package to summarize, represent and process PLINK's ROH outcomes.
+Title: ROH-processing
 Version: 0.0.1
 Author: Francisco C. Ceballos
 Maintainer: FCC <ceballoscamina@gmail>
-Description: Functions to process ROH outcomes,
+Description: R package to summarize, represent and process PLINK's ROH outcomes.
 License:
 Encoding: UTF-8
 LazyData: true
