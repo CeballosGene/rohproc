@@ -493,12 +493,38 @@ get_Prot<-function(DATA){
   genes<- plyr::ldply(gen, data.frame)
   return(genes)
 }
-#####################################
-
+##############################
+#' Genomic representation of regions
+#'
+#'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
+#'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
+#'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
+#' @param data_1 A file obtained from the functions get_ROHi
+#' @param data_2 A file obtained from the functions get_RHZ.
+#' @param pop population to be represented.
+#' @return
+#' @export
+genomic_repre<-function(data_1,data_2,pop){
+  dat_1<-subset(data_1,data_1$Population=="pop")
+  dat_2<-subset(data_2,data_2$Population=="pop")
+  d.chr <- structure(list(chr = 1:22, long = c(250000000L, 250000000L, 200000000L,
+                                               191000000L, 182000000L, 171000000L, 160000000L, 146000000L, 139000000L,
+                                               133900000L, 136000000L, 134000000L, 115000000L, 108000000L, 102000000L,
+                                               91000000L, 84000000L, 81000000L, 59000000L, 64000000L, 49000000L,
+                                               52000000L)), .Names = c("Chr", "long"), class = "data.frame", row.names = c(NA, -22L))
+  d.chr$Chr<-as.factor(d.chr$Chr)
+  positions=help_RHZ[[1]]
+  ggplot2::ggplot(data_1)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=positions, lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend =End, color = 'RHZ'),data=data_2, lwd = 3)+
+    ggplot2::scale_color_manual(name='',values=c('ROHi'='red3','Centromer'='black','RHZ'='springgreen4'))+
+    ggplot2::labs(y= "Chromosome", x = "Length of the Chromosome")+
+    ggplot2::theme_light()
+}
+##############################
 #library(roxygen2)
 #roxygenise()
-
-
-
 
 
