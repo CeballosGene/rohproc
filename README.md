@@ -1,7 +1,7 @@
 rohproc R Package
 ================
 Francisco C. Ceballos
-2022-09-08
+2022-09-19
 
 -   <a href="#package-overview" id="toc-package-overview">Package
     Overview</a>
@@ -20,6 +20,11 @@ Francisco C. Ceballos
 -   <a href="#roh-islands-and-regions-of-heterozygosity"
     id="toc-roh-islands-and-regions-of-heterozygosity">ROH islands and
     Regions of Heterozygosity.</a>
+    -   <a href="#roh-islands-rohi" id="toc-roh-islands-rohi">ROH islands
+        (ROHi)</a>
+    -   <a href="#regions-of-heterozygosity-rhz"
+        id="toc-regions-of-heterozygosity-rhz">Regions of heterozygosity
+        (RHZ)</a>
 
 ## Package Overview
 
@@ -85,7 +90,7 @@ increasing FIS. High consanguinity (and consequent high FIS), and
 genetic drift by isolation coupled with low Ne (and consequent high FST)
 are two independent and non-mutually-exclusive phenomena that can
 increase overall autozygosity (FIT) in a population. Here we also note
-that the term ‘‘endogamy’’ is generally used to describe population
+that the term ‘’endogamy’’ is generally used to describe population
 isolation, although the term is sometimes used to refer to
 consanguinity.
 
@@ -118,3 +123,24 @@ consanguinity.
 > -   *FIS vs FROH*
 
 ## ROH islands and Regions of Heterozygosity.
+
+### ROH islands (ROHi)
+
+ROH islands are defined as regions in the genome where the proportion of
+individuals of a population deviates from the expected under a binomial
+distribution. These regions have been found to be enriched with protein
+coding genes under selection. To search for ROHi, a sliding window of
+100 kb was used. In every 100 kb genomic window, the number of subjects
+with ROH was obtained and a binomial test was applied (threshold for
+significance established at p\<2x10-6, corresponding to an adjustment
+for 25,000 windows).
+
+### Regions of heterozygosity (RHZ)
+
+RHZ are regions in the genome where no individual in the population has
+a ROH. In order to only identify informative heterozygous haplotypes,
+regions that have anomalous, unstructured, high signal/read counts in
+next generation sequence experiments were removed. These 226 regions,
+called ultra-high signal artefact regions, include high mapability
+islands, low mapability islands, satellite repeats, centromere regions,
+snRNA and telomeric regions (Consortium EP 2012).
