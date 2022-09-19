@@ -210,9 +210,10 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 ##############################
 #' Islands of ROH
 #'
-#'This script searches for ROH islands in a population
+#'This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
 #' @param ChroNumber Chromosome number
+#' @param population Name of the population in brakets
 #' @return A table with the ROH islands
 #' @export
 #'
@@ -255,7 +256,7 @@ get_RHOi<-function(POP,ChroNumber,population){
   data.p<-subset(data,data$pval<=0.05/(lenChro/SizeWindow))
   data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
     dplyr::summarise(pos1=min(pos),pos2=max(pos),nsnp=sum(nsnp),n.ind=mean(data.n),per.ind=mean(prop))
-  Chr<-rep(1,length(data.re$pos1))
+  Chr<-rep(ChroNumber,length(data.re$pos1))
   ROHi<-data.frame(cbind(Chr,data.re))
   ROHi<-dplyr::mutate(ROHi,len=(pos2-pos1)/1000000)
   ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
