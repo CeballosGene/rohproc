@@ -185,7 +185,7 @@ n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
 fis_vs_froh<-function(data_1,data_2,data_3,color,shape){
   mer<-merge(data_1,data_2,by="IID")
   mer<-merge(mer,data_3,by="IID")
-  ggplot2::ggplot(data, ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
+  ggplot2::ggplot(mer, ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
     ggplot2::geom_point()+
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed",color="red") +
     ggplot2::geom_abline(slope=1,intercept = 0, linetype = "dashed",color="red")+
