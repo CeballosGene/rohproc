@@ -2,7 +2,9 @@
 
 export(ROH_class_data)
 export(ROH_class_fig)
+export(comm_uni)
 export(fis_vs_froh)
+export(genomic_repre)
 export(get_Prot)
 export(get_RHOi)
 export(get_RHZ)

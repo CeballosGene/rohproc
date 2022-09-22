@@ -10,10 +10,12 @@ get_RHOi(POP, ChroNumber, population)
 \item{POP}{A .hom file from PLINK with all the individuals belonging to the same group or population.}
 
 \item{ChroNumber}{Chromosome number}
+
+\item{population}{Name of the population in quotation marks ("")}
 }
 \value{
 A table with the ROH islands
 }
 \description{
-This script searches for ROH islands in a population
+This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
 }

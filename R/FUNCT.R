@@ -213,7 +213,7 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 #'This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
 #' @param ChroNumber Chromosome number
-#' @param population Name of the population in brakets
+#' @param population Name of the population in quotation marks ("")
 #' @return A table with the ROH islands
 #' @export
 #'
@@ -331,6 +331,7 @@ RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
 rhc_data_org<-function(POP){
   positions=help_RHZ[[1]]
   blacklist=help_RHZ[[2]]
+  POP<- POP[with(POP,order(CHR,IID,POS1)),]
   Cmt=1
   for(Chro in 1:22){
     for(Ind in unique(POP$IID)){
@@ -525,6 +526,65 @@ genomic_repre<-function(data_1,data_2,pop){
     ggplot2::theme_light()
 }
 ##############################
+#' Common and Unique regions
+#'
+#'This function finds the unique and common ROH islands or regions of heterozygosity between two
+#'populations.
+#' @param data_1 A file obtained from the functions get_ROHi or get RHZ for the first population
+#' @param data_2 A file obtained from the functions get_ROHi or get RHZ for the second population
+#' @param pop target population you want to get the outcome, in quotation marks ("")
+#' @param class Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("")
+#' @return
+#' @export
+comm_uni<-function(data_1,data_2,pop,class){
+  Data<-rbind(data_1,data_2)
+  CmtChro=1
+  Res=list()
+  Cmt1<-1
+  for(Chro in unique(Data$Chr)){
+    DataChro=Data[Data$Chr==Chro,]
+    rownames(DataChro) <- seq_len(nrow(DataChro))
+    ints <- tapply(1:nrow(DataChro),DataChro$Population,function(v)
+      intervals::Intervals(as.matrix(DataChro[v,c("Start","End")]),
+                           closed=c(FALSE,FALSE),
+                           type="Z"))
+    pops <- unique(DataChro$Population)
+    popidx <- lapply(pops,function(x) which(DataChro$Population==x))
+    names(popidx) <- pops
+    sets <- expand.grid(pops,pops,stringsAsFactors = FALSE)
+    sets <- sets[sets$Var1!=sets$Var2,]
+    olap <- lapply(1:nrow(sets),function(i)
+      intervals::interval_overlap(ints[[sets$Var1[i]]],ints[[sets$Var2[i]]]))
+    olap <- lapply(1:nrow(sets),function(i) {
+      df<-as.data.frame(olap[[i]],stringsAsFactors=FALSE)
+      df$Start <- as.numeric(rownames(df))
+      df$End <- sapply(1:nrow(df),function(j) popidx[[sets$Var2[i]]][df[j,1][[1]][1]])
+      return(df)})
+    olap <- do.call(rbind,olap)[,-1]
+    olap$olaps <- !is.na(olap$End)
+    olap <- data.frame(minoverlap=tapply(olap$olaps,olap$Start,min),maxoverlap=tapply(olap$olaps,olap$Start,max))
+    olap$rowno <- as.numeric(rownames(olap))
+    uniques <- DataChro[olap$rowno[olap$maxoverlap==0],]
+    commons <- DataChro[olap$rowno[olap$minoverlap>0],]
+    Res[[Chro]]=list('uniques'=uniques, 'commons'=commons)
+    if(Cmt1==1){
+      CommonAll<-commons
+      UniqueAll<-uniques
+    }else{
+      CommonAll<-rbind(CommonAll,commons)
+      UniqueAll<-rbind(UniqueAll ,uniques)
+    }
+    Cmt1<-Cmt1+1
+  }
+  CommonAll<-dplyr::mutate(CommonAll,type=rep("Common",length(CommonAll$Chr)))
+  UniqueAll<-dplyr::mutate(UniqueAll,type=rep("Unique",length(UniqueAll$Chr)))
+  com_uni<-rbind(CommonAll,UniqueAll)
+  res<-subset(com_uni,com_uni$type==class&com_uni$Population==pop)
+  return(res)
+}
+##############################
+
+
 #library(roxygen2)
 #roxygenise()
 
