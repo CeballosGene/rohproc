@@ -13,6 +13,6 @@ roh_summ_id(data)
 A data frame with different variables.
 }
 \description{
-This script obtains main variables from a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
+This script obtains different variables using a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
 Number of ROH<1.5Mb, Sum of ROH of different sizes, FROH, FoutofROH.
 }

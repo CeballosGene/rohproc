@@ -7,10 +7,10 @@
 get_Prot(DATA)
 }
 \arguments{
-\item{DATA}{A file obtained from the functions get_ROHi or get_RHZ.}
+\item{DATA}{A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()```.}
 }
 \value{
-A table with the Protein coding genes
+A table with the Protein coding genes.
 }
 \description{
 This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package

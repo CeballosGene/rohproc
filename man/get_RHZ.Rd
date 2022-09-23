@@ -7,7 +7,7 @@
 get_RHZ(DF, ChroNumber, PR)
 }
 \arguments{
-\item{DF}{The data frame obtained from the function rhc_data_org.}
+\item{DF}{The data frame obtained from the function ```rhc_data_org()```.}
 
 \item{ChroNumber}{Chromosome number}
 
@@ -15,7 +15,7 @@ get_RHZ(DF, ChroNumber, PR)
 in that window. 90%: 10% of people with homozygous regions in that window.}
 }
 \value{
-A table with the RHZ
+A table with the RHZ.
 }
 \description{
 This script searches for Regions of Heterozygosity in a population

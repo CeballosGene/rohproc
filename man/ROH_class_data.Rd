@@ -7,9 +7,9 @@
 ROH_class_data(data_1, data_2, data_3)
 }
 \arguments{
-\item{data_1}{The outcome of the function roh_summ_id.}
+\item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
-\item{data_2}{A file with two columns: IID, pop. pop must contain each individual's population}
+\item{data_2}{A file with two columns: IID, pop. pop must contain each individual's population.}
 
 \item{data_3}{A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.}
 }
@@ -18,5 +18,5 @@ A data frame with the raw data needed to build the figure of the total sum of RO
 }
 \description{
 This script creates a table with the raw data used in the function ROH_class_fig.
-The classification is made by continents or regions
+The classification is made by continents or regions.
 }

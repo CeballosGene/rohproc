@@ -7,9 +7,9 @@
 genomic_repre(data_1, data_2, pop)
 }
 \arguments{
-\item{data_1}{A file obtained from the functions get_ROHi}
+\item{data_1}{A file obtained from the functions ```get_ROHi()```.}
 
-\item{data_2}{A file obtained from the functions get_RHZ.}
+\item{data_2}{A file obtained from the functions ```get_RHZ()```.}
 
 \item{pop}{population to be represented.}
 }

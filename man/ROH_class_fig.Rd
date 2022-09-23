@@ -7,9 +7,9 @@
 ROH_class_fig(data_1, data_2, data_3)
 }
 \arguments{
-\item{data_1}{The outcome of the function roh_summ_id.}
+\item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
-\item{data_2}{A file with two columns: IID, pop. pop must contain each individula's population}
+\item{data_2}{A file with two columns: IID, pop. pop must contain each individual's population.}
 
 \item{data_3}{A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.}
 }
@@ -17,6 +17,6 @@ ROH_class_fig(data_1, data_2, data_3)
 A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 }
 \description{
-This script creates a figure of Sum of ROH for different length ROH classes.
-The classification is made by continents or regions
+This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+The classification is made by continents or regions.
 }

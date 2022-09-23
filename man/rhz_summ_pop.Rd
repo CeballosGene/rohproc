@@ -7,7 +7,7 @@
 rhz_summ_pop(mypath)
 }
 \arguments{
-\item{mypath}{Path to the folder with the outcomes of the get_RHZ() function.}
+\item{mypath}{Path to the folder with the outcomes of the ```get_RHZ()``` function.}
 }
 \value{
 A data frame with different variables summarize for each population.

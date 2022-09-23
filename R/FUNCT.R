@@ -1,7 +1,7 @@
 ##############################
 #' ROH variables
 #'
-#'This script obtains main variables from a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
+#'This script obtains different variables using a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
 #'Number of ROH<1.5Mb, Sum of ROH of different sizes, FROH, FoutofROH.
 #' @param data A .hom file from PLINK.
 #' @return A data frame with different variables.
@@ -27,9 +27,9 @@ roh_summ_id<-function(data){
 ##############################
 #' Summarize by Population
 #'
-#'This script summarize all the outcome of roh_summ_id by population.
-#' @param data_1 The outcome of the function roh_summ_id.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
+#'This script summarize all the outcome of ```roh_summ_id()``` by population.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
@@ -66,10 +66,10 @@ roh_summ_pop<-function(data_1,data_2){
 ##############################
 #' Figure of the total sum of different ROH lengths
 #'
-#'This script creates a figure of Sum of ROH for different length ROH classes.
-#'The classification is made by continents or regions
-#' @param data_1 The outcome of the function roh_summ_id.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
+#'This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+#'The classification is made by continents or regions.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population.
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 #' @export
@@ -102,9 +102,9 @@ ROH_class_fig<-function(data_1,data_2,data_3){
 #' RAW Data: Fig total Sum of ROH size classes.
 #'
 #'This script creates a table with the raw data used in the function ROH_class_fig.
-#'The classification is made by continents or regions
-#' @param data_1 The outcome of the function roh_summ_id.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population
+#'The classification is made by continents or regions.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population.
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
 #' @return A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 #' @export
@@ -136,11 +136,11 @@ ROH_class_data<-function(data_1,data_2,data_3){
 #'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
 #'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
 #'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
-#' @param data_1 The outcome of the function roh_sum_id.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
+#' @param data_1 The outcome of the function ```roh_sum_id()```.
+#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population.
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
-#' @param color Factor variable to be introduce as the color guide: aes(color=,): pop or cont
-#' @param shape Factor variable to be introduce as the shape guide: aes(shape=,): pop or cont
+#' @param color Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.
+#' @param shape Factor variable to be introduce as the shape guide: ```aes(shape=,)```: pop or cont.
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
@@ -173,11 +173,11 @@ n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
 # FIS vs FROH
 #'
 #'This script creates a scatter plot of FIS vs FROH.
-#' @param data_1 The outcome of the function roh_sum_id.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population
+#' @param data_1 The outcome of the function ```roh_sum_id()```.
+#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population.
 #' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
-#' @param color Factor variable to be introduce as the color guide: aes(color=,): pop or cont
-#' @param shape Factor variable to be introduce as the shape guide: aes(shape=,): pop or cont
+#' @param color Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.
+#' @param shape Factor variable to be introduce as the shape guide: ```aes(shape=,)```: pop or cont.
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
@@ -212,9 +212,9 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 #'
 #'This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
-#' @param ChroNumber Chromosome number
-#' @param population Name of the population in quotation marks ("")
-#' @return A table with the ROH islands
+#' @param ChroNumber Chromosome number.
+#' @param population Name of the population in quotation marks ("").
+#' @return A table with the ROH islands.
 #' @export
 #'
 get_RHOi<-function(POP,ChroNumber,population){
@@ -326,7 +326,7 @@ RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
 #'
 #'This script prepares the dataset to search for runs of heterozygosity in the population.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
-#' @return A file ready to be used to fing RHZ
+#' @return A file ready to be used to fing RHZ.
 #' @export
 rhc_data_org<-function(POP){
   positions=help_RHZ[[1]]
@@ -387,11 +387,11 @@ rhc_data_org<-function(POP){
 #' RUNS OF HETEROZYGOSITY II
 #'
 #'This script searches for Regions of Heterozygosity in a population
-#' @param DF The data frame obtained from the function rhc_data_org.
+#' @param DF The data frame obtained from the function ```rhc_data_org()```.
 #' @param ChroNumber Chromosome number
 #' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
 #' in that window. 90%: 10% of people with homozygous regions in that window.
-#' @return A table with the RHZ
+#' @return A table with the RHZ.
 #' @export
 #'
 get_RHZ<-function(DF,ChroNumber,PR){
@@ -441,7 +441,7 @@ get_RHZ<-function(DF,ChroNumber,PR){
 #' Summarize RHZ by Population
 #'
 #'This script summarize all the outcome of RHZ by population.
-#' @param mypath Path to the folder with the outcomes of the get_RHZ() function.
+#' @param mypath Path to the folder with the outcomes of the ```get_RHZ()``` function.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
@@ -476,8 +476,8 @@ rhz_summ_pop<-function(mypath){
 #' Searching for Protein Coding Genes
 #'
 #'This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package
-#' @param DATA A file obtained from the functions get_ROHi or get_RHZ.
-#' @return A table with the Protein coding genes
+#' @param DATA A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()```.
+#' @return A table with the Protein coding genes.
 #' @export
 get_Prot<-function(DATA){
   mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="www.ensembl.org")
@@ -501,8 +501,8 @@ get_Prot<-function(DATA){
 #'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
 #'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
 #'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
-#' @param data_1 A file obtained from the functions get_ROHi
-#' @param data_2 A file obtained from the functions get_RHZ.
+#' @param data_1 A file obtained from the functions ```get_ROHi()```.
+#' @param data_2 A file obtained from the functions ```get_RHZ()```.
 #' @param pop population to be represented.
 #' @return
 #' @export
@@ -530,10 +530,10 @@ genomic_repre<-function(data_1,data_2,pop){
 #'
 #'This function finds the unique and common ROH islands or regions of heterozygosity between two
 #'populations.
-#' @param data_1 A file obtained from the functions get_ROHi or get RHZ for the first population
-#' @param data_2 A file obtained from the functions get_ROHi or get RHZ for the second population
-#' @param pop target population you want to get the outcome, in quotation marks ("")
-#' @param class Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("")
+#' @param data_1 A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for the first population.
+#' @param data_2 A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for the second population.
+#' @param pop target population you want to get the outcome, in quotation marks ("").
+#' @param class Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("").
 #' @return
 #' @export
 comm_uni<-function(data_1,data_2,pop,class){
@@ -583,8 +583,6 @@ comm_uni<-function(data_1,data_2,pop,class){
   return(res)
 }
 ##############################
-
-
 #library(roxygen2)
 #roxygenise()
 

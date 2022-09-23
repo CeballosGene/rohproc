@@ -7,13 +7,13 @@
 comm_uni(data_1, data_2, pop, class)
 }
 \arguments{
-\item{data_1}{A file obtained from the functions get_ROHi or get RHZ for the first population}
+\item{data_1}{A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for the first population.}
 
-\item{data_2}{A file obtained from the functions get_ROHi or get RHZ for the second population}
+\item{data_2}{A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for the second population.}
 
-\item{pop}{target population you want to get the outcome, in quotation marks ("")}
+\item{pop}{target population you want to get the outcome, in quotation marks ("").}
 
-\item{class}{Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("")}
+\item{class}{Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("").}
 }
 \description{
 This function finds the unique and common ROH islands or regions of heterozygosity between two

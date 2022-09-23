@@ -7,15 +7,15 @@
 fis_vs_froh(data_1, data_2, data_3, color, shape)
 }
 \arguments{
-\item{data_1}{The outcome of the function roh_sum_id.}
+\item{data_1}{The outcome of the function ```roh_sum_id()```.}
 
-\item{data_2}{A file with two columns: IID, pop. pop must contain each individula's population}
+\item{data_2}{A file with two columns: IID, pop. pop must contain each individula's population.}
 
 \item{data_3}{A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.}
 
-\item{color}{Factor variable to be introduce as the color guide: aes(color=,): pop or cont}
+\item{color}{Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.}
 
-\item{shape}{Factor variable to be introduce as the shape guide: aes(shape=,): pop or cont}
+\item{shape}{Factor variable to be introduce as the shape guide: ```aes(shape=,)```: pop or cont.}
 
 \item{simul}{If true simulations of number and sum of ROH for different consanguinity mating is added.}
 }
