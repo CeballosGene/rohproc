@@ -15,6 +15,9 @@ comm_uni(data_1, data_2, pop, class)
 
 \item{class}{Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("").}
 }
+\value{
+Pairwise common and Unique regions
+}
 \description{
 This function finds the unique and common ROH islands or regions of heterozygosity between two
 populations.

@@ -9,7 +9,7 @@ roh_summ_pop(data_1, data_2)
 \arguments{
 \item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
-\item{data_2}{A file with two columns: "IID", "pop". pop must contain each individual's population.}
+\item{data_2}{A file with two columns: "IID", "pop". pop must contain each individual's population}
 }
 \value{
 A data frame with different variables summarize for each population.

@@ -13,6 +13,9 @@ genomic_repre(data_1, data_2, pop)
 
 \item{pop}{population to be represented.}
 }
+\value{
+Figure of the ROHi and RHZ in a popualtion
+}
 \description{
 This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
 It is possible to add the simulated number and sum of ROH for different consanguineous mating.

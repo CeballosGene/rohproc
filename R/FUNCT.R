@@ -29,7 +29,7 @@ roh_summ_id<-function(data){
 #'
 #'This script summarize all the outcome of ```roh_summ_id()``` by population.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
-#' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population.
+#' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
@@ -378,7 +378,7 @@ rhc_data_org<-function(POP){
       Cmt<-Cmt+1
     }
   }
-  colnames(DataFDel) <- c("CH","iid","pos1","pos2")
+  colnames(DataFDel) <- c("CHR","IID","POS1","POS2")
   cluster<-DataFDel
   cluster$KB<-cluster$pos2 - cluster$pos1
   return(cluster)
@@ -504,7 +504,7 @@ get_Prot<-function(DATA){
 #' @param data_1 A file obtained from the functions ```get_ROHi()```.
 #' @param data_2 A file obtained from the functions ```get_RHZ()```.
 #' @param pop population to be represented.
-#' @return
+#' @return Figure of the ROHi and RHZ in a popualtion
 #' @export
 genomic_repre<-function(data_1,data_2,pop){
   dat_1<-subset(data_1,data_1$Population=="pop")
@@ -534,7 +534,7 @@ genomic_repre<-function(data_1,data_2,pop){
 #' @param data_2 A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for the second population.
 #' @param pop target population you want to get the outcome, in quotation marks ("").
 #' @param class Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("").
-#' @return
+#' @return Pairwise common and Unique regions
 #' @export
 comm_uni<-function(data_1,data_2,pop,class){
   Data<-rbind(data_1,data_2)
