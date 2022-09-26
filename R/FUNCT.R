@@ -425,7 +425,7 @@ get_RHZ<-function(DF,ChroNumber,PR){
   x<-seq(1:round(lenChro/SizeWindow))
   pos<-(x*SizeWindow)
   prop<-data.p*100
-  data<-data.frame(cbind(x,data.n,prop,pos,len))
+  data<-data.frame(cbind(x,data.n,prop,pos))
   data.p<-subset(data,data$prop>=PR)
   data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
     dplyr::summarise(pos1=min(pos),pos2=max(pos),len=sum(len),n.ind=mean(data.n),per.ind=mean(prop))
