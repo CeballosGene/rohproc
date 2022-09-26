@@ -4,7 +4,7 @@
 \alias{get_RHZ}
 \title{RUNS OF HETEROZYGOSITY II}
 \usage{
-get_RHZ(DF, ChroNumber, PR)
+get_RHZ(DF, ChroNumber, PR, population)
 }
 \arguments{
 \item{DF}{The data frame obtained from the function ```rhc_data_org()```.}
@@ -13,6 +13,8 @@ get_RHZ(DF, ChroNumber, PR)
 
 \item{PR}{Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
 in that window. 90%: 10% of people with homozygous regions in that window.}
+
+\item{population}{Name of the population in quotation marks ("").}
 }
 \value{
 A table with the RHZ.

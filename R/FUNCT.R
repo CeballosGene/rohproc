@@ -391,10 +391,11 @@ rhc_data_org<-function(POP){
 #' @param ChroNumber Chromosome number
 #' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
 #' in that window. 90%: 10% of people with homozygous regions in that window.
+#' @param population Name of the population in quotation marks ("").
 #' @return A table with the RHZ.
 #' @export
 #'
-get_RHZ<-function(DF,ChroNumber,PR){
+get_RHZ<-function(DF,ChroNumber,PR,population){
   SizeWindow=10000
   if(ChroNumber==1){lenChro=250000000}
   if(ChroNumber==2){lenChro=250000000}
@@ -428,11 +429,11 @@ get_RHZ<-function(DF,ChroNumber,PR){
   data<-data.frame(cbind(x,data.n,prop,pos))
   data.p<-subset(data,data$prop>=PR)
   data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
-    dplyr::summarise(pos1=min(pos),pos2=max(pos),len=sum(len),n.ind=mean(data.n),per.ind=mean(prop))
+    dplyr::summarise(pos1=min(pos),pos2=max(pos),n.ind=mean(data.n),per.ind=mean(prop))
   Chr<-rep(ChroNumber,length(data.re$pos1))
   OUT<-data.frame(cbind(Chr,data.re))
   OUT<-dplyr::mutate(OUT,len=(pos2-pos1)/1000000)
-  OUT<-dplyr::mutate(ROHi,pop=rep(population,length(OUT$Chr)))
+  OUT<-dplyr::mutate(OUT,pop=rep(population,length(OUT$Chr)))
   OUT<-dplyr::select(OUT,Chr,pos1,pos2,len,n.ind,per.ind,pop)
   colnames(OUT)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
   return(OUT)
