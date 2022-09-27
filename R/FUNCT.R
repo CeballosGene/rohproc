@@ -380,7 +380,7 @@ rhc_data_org<-function(POP){
   }
   colnames(DataFDel) <- c("CHR","IID","POS1","POS2")
   cluster<-DataFDel
-  cluster$KB<-cluster$pos2 - cluster$pos1
+  cluster$KB<-cluster$POS2 - cluster$POS1
   return(cluster)
 }
 ##############################
