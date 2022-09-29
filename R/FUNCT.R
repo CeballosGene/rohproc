@@ -161,7 +161,7 @@ n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
   mer<-merge(data_1,data_2,by="IID")
   mer<-merge(mer,data_3,by="IID")
   ggplot2::ggplot(mer,ggplot2::aes(x=Sum_long,y=N_long,color={{color}},shape={{shape}}))+
-    ggplot2::geom_abline(intercept= 0.4866, slope=0.000738, linetype="dashed") +
+    ggplot2::geom_abline(intercept= 0.4866, slope=0.000438, linetype="dashed") +
     {if(simul)ggplot2::geom_point(data=data_sc, color="olivedrab1",shape=20,alpha = 0.25)}+
     {if(simul)ggplot2::geom_point(data=data_fc,color="yellow1",shape=20,alpha=0.25)}+
     {if(simul)ggplot2::geom_point(data=data_av,color="orangered1",shape=20,alpha=0.25)}+
