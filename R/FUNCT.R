@@ -36,7 +36,8 @@ roh_summ_id<-function(data){
 roh_summ_pop<-function(data_1,data_2){
   mer<-merge(data_1,data_2,by="IID") |>
     dplyr::group_by(pop)|>
-    dplyr::summarise(mean_Sum_long=mean(Sum_long),
+    dplyr::summarise(Number=length(IID),
+                     mean_Sum_long=mean(Sum_long),
                      sd_Sum_long=sd(Sum_long),
                      median_Sum_long=median(Sum_long),
                      iqr_Sum_long=IQR(Sum_long),
