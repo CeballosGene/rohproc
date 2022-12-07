@@ -65,13 +65,93 @@ roh_summ_pop<-function(data_1,data_2){
   return(mer)
 }
 ##############################
+#' Summarize by Continent
+#'
+#'This script summarize all the outcome of ```roh_summ_id()``` by population.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with two columns: "IID", "cont". cont must contain each individual's continent
+#' @return A data frame with different variables summarize for each continent.
+#' @export
+#'
+roh_summ_cont<-function(data_1,data_2){
+  mer<-merge(data_1,data_2,by="IID") |>
+    dplyr::group_by(cont)|>
+    dplyr::summarise(Number=length(IID),
+                     mean_Sum_long=mean(Sum_long),
+                     sd_Sum_long=sd(Sum_long),
+                     median_Sum_long=median(Sum_long),
+                     iqr_Sum_long=IQR(Sum_long),
+                     mean_N_long=mean(N_long),
+                     sd_N_long=sd(N_long),
+                     median_N_long=median(N_long),
+                     iqr_N_long=IQR(N_long),
+                     mean_Sum_short=mean(Sum_short),
+                     sd_Sum_short=sd(Sum_short),
+                     median_Sum_short=median(Sum_short),
+                     iqr_Sum_short=IQR(Sum_short),
+                     mean_N_short=mean(N_short),
+                     sd_N_short=sd(N_short),
+                     median_N_short=median(N_short),
+                     iqr_N_short=IQR(N_short),
+                     mean_Froh=mean(Froh),
+                     sd_Froh=sd(Froh),
+                     median_Froh=median(Froh),
+                     iqr_Froh=IQR(Froh),
+                     mean_Foutroh=mean(Froh),
+                     sd_Foutroh=sd(Foutroh),
+                     median_Foutroh=median(Foutroh),
+                     iqr_Foutroh=IQR(Foutroh))
+  mer<-as.data.frame(mer)
+  return(mer)
+}
+##############################
+#' Summarize by factor
+#'
+#'This script summarize all the outcome of ```roh_summ_id()``` by any factor.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with each individual's factor
+#' @vars A vector with 1 or more factors do group with.
+#' @return A data frame with different variables summarize for each continent.
+#' @export
+#'
+roh_summ_factor<-function(data_1,data_2,group_vars){
+  mer<-merge(data_1,data_2,by="IID") |>
+    dplyr::group_by(across({{group_vars}}))|>
+    dplyr::summarise(Number=length(IID),
+                     mean_Sum_long=mean(Sum_long),
+                     sd_Sum_long=sd(Sum_long),
+                     median_Sum_long=median(Sum_long),
+                     iqr_Sum_long=IQR(Sum_long),
+                     mean_N_long=mean(N_long),
+                     sd_N_long=sd(N_long),
+                     median_N_long=median(N_long),
+                     iqr_N_long=IQR(N_long),
+                     mean_Sum_short=mean(Sum_short),
+                     sd_Sum_short=sd(Sum_short),
+                     median_Sum_short=median(Sum_short),
+                     iqr_Sum_short=IQR(Sum_short),
+                     mean_N_short=mean(N_short),
+                     sd_N_short=sd(N_short),
+                     median_N_short=median(N_short),
+                     iqr_N_short=IQR(N_short),
+                     mean_Froh=mean(Froh),
+                     sd_Froh=sd(Froh),
+                     median_Froh=median(Froh),
+                     iqr_Froh=IQR(Froh),
+                     mean_Foutroh=mean(Froh),
+                     sd_Foutroh=sd(Foutroh),
+                     median_Foutroh=median(Foutroh),
+                     iqr_Foutroh=IQR(Foutroh))
+  mer<-as.data.frame(mer)
+  return(mer)
+}
+##############################
 #' Figure of the total sum of different ROH lengths
 #'
 #'This script creates a figure of the population's average Sum of ROH for different length ROH classes.
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population.
-#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param data_2 A file with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 #' @export
 #'
@@ -91,8 +171,7 @@ ROH_class_fig<-function(data_1,data_2,data_3){
                                rep("cl2_4",length(unique(data_2$pop))),
                                rep("cl4_8",length(unique(data_2$pop))),
                                rep("cl8",length(unique(data_2$pop)))))
-  df<-dplyr::mutate(df,pop=rep(unique(KGenomes_pops$pop),6))
-  df<-merge(df,data_3,by="pop")
+  df<-dplyr::mutate(df,pop=rep(unique(data_2$pop),6))
   df<-df[order(df$cont),]
   ggplot2::ggplot(data=df, ggplot2::aes(x=class, y=Sum, group=pop,)) +
     ggplot2::geom_line(ggplot2::aes(color=cont))+
@@ -585,7 +664,7 @@ comm_uni<-function(data_1,data_2,pop,class){
   return(res)
 }
 ##############################
-#library(roxygen2)
-#roxygenise()
+library(roxygen2)
+roxygenise()
 
 
