@@ -664,7 +664,7 @@ comm_uni<-function(data_1,data_2,pop,class){
   return(res)
 }
 ##############################
-library(roxygen2)
-roxygenise()
+#library(roxygen2)
+#roxygenise()
 
 
