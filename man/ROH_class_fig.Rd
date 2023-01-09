@@ -4,12 +4,12 @@
 \alias{ROH_class_fig}
 \title{Figure of the total sum of different ROH lengths}
 \usage{
-ROH_class_fig(data_1, data_2, data_3)
+ROH_class_fig(data_1, data_2)
 }
 \arguments{
 \item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
-\item{data_2}{A file with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.}
+\item{data_2}{A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.}
 }
 \value{
 A figure of the of the total sum of ROH for different ROH size classes and continents or regions.

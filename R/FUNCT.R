@@ -151,11 +151,11 @@ roh_summ_factor<-function(data_1,data_2,group_vars){
 #'This script creates a figure of the population's average Sum of ROH for different length ROH classes.
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
-#' @param data_2 A file with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
+#' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 #' @export
 #'
-ROH_class_fig<-function(data_1,data_2,data_3){
+ROH_class_fig<-function(data_1,data_2){
   mer=merge(data_1,data_2,by="IID") |> dplyr::group_by(pop) |>
     dplyr::summarise(cl03_05=mean(cl_03_05),
                      cl05_1=mean(cl_05_1),
@@ -172,10 +172,11 @@ ROH_class_fig<-function(data_1,data_2,data_3){
                                rep("cl4_8",length(unique(data_2$pop))),
                                rep("cl8",length(unique(data_2$pop)))))
   df<-dplyr::mutate(df,pop=rep(unique(data_2$pop),6))
+  df<-merge(df,data_2,by="pop")
   df<-df[order(df$cont),]
   ggplot2::ggplot(data=df, ggplot2::aes(x=class, y=Sum, group=pop,)) +
-    ggplot2::geom_line(ggplot2::aes(color=cont))+
-    ggplot2::geom_point(ggplot2::aes(color=cont))+
+    ggplot2::geom_line(ggplot2::aes(color=pop))+
+    ggplot2::geom_point(ggplot2::aes(color=pop))+
     ggplot2::theme_light()
 }
 ##############################
@@ -184,12 +185,11 @@ ROH_class_fig<-function(data_1,data_2,data_3){
 #'This script creates a table with the raw data used in the function ROH_class_fig.
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individual's population.
-#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @return A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 #' @export
 #'
-ROH_class_data<-function(data_1,data_2,data_3){
+ROH_class_data<-function(data_1,data_2){
   mer=merge(data_1,data_2,by="IID") |> dplyr::group_by(pop) |>
     dplyr::summarise(cl03_05=mean(cl_03_05),
                      cl05_1=mean(cl_05_1),
@@ -205,8 +205,8 @@ ROH_class_data<-function(data_1,data_2,data_3){
                                rep("cl2_4",length(unique(data_2$pop))),
                                rep("cl4_8",length(unique(data_2$pop))),
                                rep("cl8",length(unique(data_2$pop)))))
-  df<-dplyr::mutate(df,pop=rep(unique(KGenomes_pops$pop),6))
-  df<-merge(df,data_3,by="pop")
+  df<-dplyr::mutate(df,pop=rep(unique(data_2$pop),6))
+  df<-merge(df,data_2,by="pop")
   df<-df[order(df$cont),]
   return(df)
 }
@@ -217,15 +217,14 @@ ROH_class_data<-function(data_1,data_2,data_3){
 #'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
 #'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
 #' @param data_1 The outcome of the function ```roh_sum_id()```.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population.
-#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @param color Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.
 #' @param shape Factor variable to be introduce as the shape guide: ```aes(shape=,)```: pop or cont.
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
 #'
-n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
+n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
   Sum_long<-rnorm(5000,0.0152,0.009)*2881033
   N_long<-rnorm(5000,4.81,2.5)
   data_sc<-as.data.frame(cbind(Sum_long,N_long));data_sc[data_sc < 0] <- 0
@@ -239,7 +238,6 @@ n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
   N_long<-rnorm(5000,40.7,4.5)
   data_in<-as.data.frame(cbind(Sum_long,N_long))
   mer<-merge(data_1,data_2,by="IID")
-  mer<-merge(mer,data_3,by="IID")
   ggplot2::ggplot(mer,ggplot2::aes(x=Sum_long,y=N_long,color={{color}},shape={{shape}}))+
     ggplot2::geom_abline(intercept= 0.4866, slope=0.000438, linetype="dashed") +
     {if(simul)ggplot2::geom_point(data=data_sc, color="olivedrab1",shape=20,alpha = 0.25)}+
@@ -254,17 +252,15 @@ n_vs_sum<-function(data_1,data_2,data_3,color,shape,simul=TRUE){
 #'
 #'This script creates a scatter plot of FIS vs FROH.
 #' @param data_1 The outcome of the function ```roh_sum_id()```.
-#' @param data_2 A file with two columns: IID, pop. pop must contain each individula's population.
-#' @param data_3 A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.
+#' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @param color Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.
 #' @param shape Factor variable to be introduce as the shape guide: ```aes(shape=,)```: pop or cont.
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
 #'
-fis_vs_froh<-function(data_1,data_2,data_3,color,shape){
+fis_vs_froh<-function(data_1,data_2,color,shape){
   mer<-merge(data_1,data_2,by="IID")
-  mer<-merge(mer,data_3,by="IID")
   ggplot2::ggplot(mer, ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
     ggplot2::geom_point()+
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed",color="red") +
@@ -298,7 +294,6 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 #' @export
 #'
 get_RHOi<-function(POP,ChroNumber,population){
-  nSNP=(mean(POP$NSNP[POP$KB>=1000 & POP$KB<=1100]))*0.1
   SizeWindow=10000
   if(ChroNumber==1){lenChro=250000000}
   if(ChroNumber==2){lenChro=250000000}
@@ -330,18 +325,17 @@ get_RHOi<-function(POP,ChroNumber,population){
   pval<-ppois(data.n,lambda=av,lower=FALSE)
   x<-seq(1:round(lenChro/SizeWindow))
   pos<-(x*SizeWindow)
-  nsnp<-rep(nSNP,2500)
   prop<-data.p*100
-  data<-data.frame(cbind(x,data.n,prop,pos,nsnp,pval))
+  data<-data.frame(cbind(x,data.n,prop,pos,pval))
   data.p<-subset(data,data$pval<=0.05/(lenChro/SizeWindow))
   data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
-    dplyr::summarise(pos1=min(pos),pos2=max(pos),nsnp=sum(nsnp),n.ind=mean(data.n),per.ind=mean(prop))
+    dplyr::summarise(pos1=min(pos),pos2=max(pos),n.ind=mean(data.n),per.ind=mean(prop))
   Chr<-rep(ChroNumber,length(data.re$pos1))
   ROHi<-data.frame(cbind(Chr,data.re))
   ROHi<-dplyr::mutate(ROHi,len=(pos2-pos1)/1000000)
   ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
-  ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,nsnp,n.ind,per.ind,pop)
-  colnames(ROHi)<-c("Chr","Start","End","Length","N_SNP","N_Individuals","P_Individuals","Population")
+  ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,n.ind,per.ind,pop)
+  colnames(ROHi)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
   return(ROHi)
 }
 ################################

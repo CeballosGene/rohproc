@@ -4,14 +4,12 @@
 \alias{ROH_class_data}
 \title{RAW Data: Fig total Sum of ROH size classes.}
 \usage{
-ROH_class_data(data_1, data_2, data_3)
+ROH_class_data(data_1, data_2)
 }
 \arguments{
 \item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
-\item{data_2}{A file with two columns: IID, pop. pop must contain each individual's population.}
-
-\item{data_3}{A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.}
+\item{data_2}{A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.}
 }
 \value{
 A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.

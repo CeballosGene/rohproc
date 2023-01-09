@@ -4,14 +4,12 @@
 \alias{fis_vs_froh}
 \title{This script creates a scatter plot of FIS vs FROH.}
 \usage{
-fis_vs_froh(data_1, data_2, data_3, color, shape)
+fis_vs_froh(data_1, data_2, color, shape)
 }
 \arguments{
 \item{data_1}{The outcome of the function ```roh_sum_id()```.}
 
-\item{data_2}{A file with two columns: IID, pop. pop must contain each individula's population.}
-
-\item{data_3}{A file with two columns: pop, cont. pop must contain all the populations present in the data_1 file, cont must contain the region of each population.}
+\item{data_2}{A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.}
 
 \item{color}{Factor variable to be introduce as the color guide: ```aes(color=,)```: pop or cont.}
 
