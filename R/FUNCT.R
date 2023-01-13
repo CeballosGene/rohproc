@@ -110,7 +110,7 @@ roh_summ_cont<-function(data_1,data_2){
 #'This script summarize all the outcome of ```roh_summ_id()``` by any factor.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A file with each individual's factor
-#' @vars A vector with 1 or more factors do group with.
+#' @group_vars A vector with 1 or more factors do group with.
 #' @return A data frame with different variables summarize for each continent.
 #' @export
 #'
@@ -360,11 +360,6 @@ rohi_summ_pop<-function(mypath){
                      median_Length=median(Length),
                      iqr_Length=IQR(Length),
                      max_Length=max(Length),
-                     mean_N_SNP=mean(N_SNP),
-                     sd_N_SNP=sd(N_SNP),
-                     median_N_SNP=median(N_SNP),
-                     iqr_N_SNP=IQR(N_SNP),
-                     max_N_SNP=max(N_SNP),
                      mean_N_Individuals=mean(N_Individuals),
                      sd_N_Individuals=sd(N_Individuals),
                      median_N_Individuals=median(N_Individuals),
@@ -571,36 +566,6 @@ get_Prot<-function(DATA){
   return(genes)
 }
 ##############################
-#' Genomic representation of regions
-#'
-#'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
-#'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
-#'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
-#' @param data_1 A file obtained from the functions ```get_ROHi()```.
-#' @param data_2 A file obtained from the functions ```get_RHZ()```.
-#' @param pop population to be represented.
-#' @return Figure of the ROHi and RHZ in a popualtion
-#' @export
-genomic_repre<-function(data_1,data_2,pop){
-  dat_1<-subset(data_1,data_1$Population=="pop")
-  dat_2<-subset(data_2,data_2$Population=="pop")
-  d.chr <- structure(list(chr = 1:22, long = c(250000000L, 250000000L, 200000000L,
-                                               191000000L, 182000000L, 171000000L, 160000000L, 146000000L, 139000000L,
-                                               133900000L, 136000000L, 134000000L, 115000000L, 108000000L, 102000000L,
-                                               91000000L, 84000000L, 81000000L, 59000000L, 64000000L, 49000000L,
-                                               52000000L)), .Names = c("Chr", "long"), class = "data.frame", row.names = c(NA, -22L))
-  d.chr$Chr<-as.factor(d.chr$Chr)
-  positions=help_RHZ[[1]]
-  ggplot2::ggplot(data_1)+
-    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
-    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
-    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=positions, lwd = 3)+
-    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend =End, color = 'RHZ'),data=data_2, lwd = 3)+
-    ggplot2::scale_color_manual(name='',values=c('ROHi'='red3','Centromer'='black','RHZ'='springgreen4'))+
-    ggplot2::labs(y= "Chromosome", x = "Length of the Chromosome")+
-    ggplot2::theme_light()
-}
-##############################
 #' Common and Unique regions
 #'
 #'This function finds the unique and common ROH islands or regions of heterozygosity between two
@@ -658,7 +623,45 @@ comm_uni<-function(data_1,data_2,pop,class){
   return(res)
 }
 ##############################
+#' ROHi Representation
+#'
+#'This script creates a genomic representation of the ROH islands or Regions of Heterozygosity (RHZ).
+#' @param data_1 A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()``` for a population
+#' @param pop target population you want to get the outcome, in quotation marks ("").
+#' @return Figure of the ROHi or RHZ in a popualtion
+#' @export
+rohi_genome<-function(data_1,pop){
+  dat_1<-subset(data_1,data_1$Population=="pop")
+  ggplot2::ggplot(data_1)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
+    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=cent, lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
+    ggplot2::scale_color_manual(name='',values=c('ROHi'='red4',"Centromer"="black"))+
+    ggplot2::scale_y_discrete( limits=c(1:22)) +
+    ggplot2::theme_light()
+}
+##############################
+#' ROHi + ROHZ Representation
+#'
+#'This script creates a genomic representation of ROH islands and regions of heterozygosity (RHZ).
+#' @param data_1 A file obtained from the functions ```get_ROHi()```.
+#' @param data_2 A file obtained from the functions ```get_RHZ()```.
+#' @param pop population to be represented.
+#' @return Figure of the ROHi and RHZ in a popualtion
+#' @export
+rohi_rohz_genome<-function(data_1,data_2,pop){
+  dat_1<-subset(data_1,data_1$Population=="pop")
+  dat_2<-subset(data_2,data_2$Population=="pop")
+  ggplot2::ggplot(data_1)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=cent, lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend =End, color = 'RHZ'),data=data_2, lwd = 3)+
+    ggplot2::scale_color_manual(name='',values=c('ROHi'='red3','Centromer'='black','RHZ'='springgreen4'))+
+    ggplot2::labs(y= "Chromosome", x = "Length of the Chromosome")+
+    ggplot2::theme_light()
+}
+##############################
 #library(roxygen2)
 #roxygenise()
-
 
