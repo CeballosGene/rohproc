@@ -632,9 +632,11 @@ comm_uni<-function(data_1,data_2,pop,class){
 #' @export
 rohi_genome<-function(data_1,pop){
   dat_1<-subset(data_1,data_1$Population=="pop")
+  positions=help_RHZ[[1]]
+  d.chr=help_RHZ[[3]]
   ggplot2::ggplot(data_1)+
     ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
-    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=cent, lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=positions, lwd = 3)+
     ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
     ggplot2::scale_color_manual(name='',values=c('ROHi'='red4',"Centromer"="black"))+
     ggplot2::scale_y_discrete( limits=c(1:22)) +
@@ -652,10 +654,12 @@ rohi_genome<-function(data_1,pop){
 rohi_rohz_genome<-function(data_1,data_2,pop){
   dat_1<-subset(data_1,data_1$Population=="pop")
   dat_2<-subset(data_2,data_2$Population=="pop")
+  positions=help_RHZ[[1]]
+  d.chr=help_RHZ[[3]]
   ggplot2::ggplot(data_1)+
     ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = 0, xend = long), data = d.chr) +
     ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend = End, color='ROHi'), lwd = 3)+
-    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=cent, lwd = 3)+
+    ggplot2::geom_segment(ggplot2::aes(y = chr, yend = chr, x = cen.pos1, xend = cen.pos2, color='Centromer'),data=positions, lwd = 3)+
     ggplot2::geom_segment(ggplot2::aes(y = Chr, yend = Chr, x = Start, xend =End, color = 'RHZ'),data=data_2, lwd = 3)+
     ggplot2::scale_color_manual(name='',values=c('ROHi'='red3','Centromer'='black','RHZ'='springgreen4'))+
     ggplot2::labs(y= "Chromosome", x = "Length of the Chromosome")+
