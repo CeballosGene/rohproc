@@ -4,7 +4,7 @@
 \alias{rhz_summ_pop}
 \title{Summarize RHZ by Population}
 \usage{
-rhz_summ_pop(mypath)
+rhz_summ_pop(mypath, group_vars)
 }
 \arguments{
 \item{mypath}{Path to the folder with the outcomes of the ```get_RHZ()``` function.}
