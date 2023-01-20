@@ -343,18 +343,17 @@ get_RHOi<-function(POP,ChroNumber,population){
 #'
 #'This script summarize all the outcome of get_ROHi by population.
 #' @param mypath Path to the folder with the outcomes of the get_RHOi() function.
-#' @group_vars A vector with 1 or more factors do group with.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rohi_summ_pop<-function(mypath,group_vars){
+rohi_summ_pop<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
     dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
   }
   dat<-dat|>
-    dplyr::group_by(across({{group_vars}}))|>
+    dplyr::group_by(Population)|>
     dplyr::summarise(Number=length(Chr),
                      mean_length=mean(Length),
                      sd_length=sd(Length),
@@ -513,18 +512,17 @@ get_RHZ<-function(DF,ChroNumber,PR,population){
 #'
 #'This script summarize all the outcome of RHZ by population.
 #' @param mypath Path to the folder with the outcomes of the ```get_RHZ()``` function.
-#' @group_vars A vector with 1 or more factors do group with.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rhz_summ_pop<-function(mypath,group_vars){
+rhz_summ_pop<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
     dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
   }
   dat<-dat|>
-    dplyr::group_by(across({{group_vars}}))|>
+    dplyr::group_by(Population)|>
     dplyr::summarise(Number=length(Chr),
                      mean_length=mean(Length),
                      sd_length=sd(Length),

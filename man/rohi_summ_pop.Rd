@@ -4,7 +4,7 @@
 \alias{rohi_summ_pop}
 \title{Summarize ROHi by Population}
 \usage{
-rohi_summ_pop(mypath, group_vars)
+rohi_summ_pop(mypath)
 }
 \arguments{
 \item{mypath}{Path to the folder with the outcomes of the get_RHOi() function.}
