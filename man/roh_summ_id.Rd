@@ -7,12 +7,23 @@
 roh_summ_id(data)
 }
 \arguments{
-\item{data}{A .hom file from PLINK.}
+\item{data}{A .hom file obtained using --homozyg flag in PLINK.}
 }
 \value{
-A data frame with different variables.
+A data frame with the variable previously described.
 }
 \description{
-This script obtains different variables using a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
-Number of ROH<1.5Mb, Sum of ROH of different sizes, FROH, FoutofROH.
+This script extracts various valuable variables from a PLINK home file, including:
+The total sum of ROH (Runs of Homozygosity) greater than or equal to 1.5Mb. (Sum_long).
+The count of ROH greater than or equal to 1.5Mb (N_long).
+The total sum of ROH less than 1.5Mb (Sum_short).
+The count of ROH less than 1.5Mb (N_short).
+The total sum of ROH for different size categories (0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
+The genomic inbreeding coefficient, also known as Froh.
+The homozygosity outside of ROH, referred to as Foutroh.
+}
+\examples{
+# Obtaining basic ROH variables:
+roh_summ_id(KGenomes_hom)
+
 }

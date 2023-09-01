@@ -17,3 +17,10 @@ A data frame with different variables summarize for each continent.
 \description{
 This script summarize all the outcome of ```roh_summ_id()``` by population.
 }
+\examples{
+# Obtaining basic ROH variables:
+rohsum<-roh_summ_id(KGenomes_hom)
+pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+roh_summ_cont(rohsum,pops)
+
+}

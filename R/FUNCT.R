@@ -1,11 +1,20 @@
 ##############################
 #' ROH variables
 #'
-#'This script obtains different variables using a PLINK's home file: Sum of ROH>=1.5Mb, Number of ROH>=1.5Mb, Sum of ROH<1.5Mb,
-#'Number of ROH<1.5Mb, Sum of ROH of different sizes, FROH, FoutofROH.
-#' @param data A .hom file from PLINK.
-#' @return A data frame with different variables.
+#'This script extracts various valuable variables from a PLINK home file, including:
+#'The total sum of ROH (Runs of Homozygosity) greater than or equal to 1.5Mb. (Sum_long).
+#'The count of ROH greater than or equal to 1.5Mb (N_long).
+#'The total sum of ROH less than 1.5Mb (Sum_short).
+#'The count of ROH less than 1.5Mb (N_short).
+#'The total sum of ROH for different size categories (0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
+#'The genomic inbreeding coefficient, also known as Froh.
+#'The homozygosity outside of ROH, referred to as Foutroh.
+#' @param data A .hom file obtained using --homozyg flag in PLINK.
+#' @return A data frame with the variable previously described.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' roh_summ_id(HGDP_hom)
 #'
 roh_summ_id<-function(data){
   results = data |> dplyr::group_by(IID) |>
@@ -32,6 +41,10 @@ roh_summ_id<-function(data){
 #' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population
 #' @return A data frame with different variables summarize for each population.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' roh_summ_pop(rohsum,HGDP_pops)
 #'
 roh_summ_pop<-function(data_1,data_2){
   mer<-merge(data_1,data_2,by="IID") |>
@@ -72,6 +85,11 @@ roh_summ_pop<-function(data_1,data_2){
 #' @param data_2 A file with two columns: "IID", "cont". cont must contain each individual's continent
 #' @return A data frame with different variables summarize for each continent.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
+#' roh_summ_cont(rohsum,pops)
 #'
 roh_summ_cont<-function(data_1,data_2){
   mer<-merge(data_1,data_2,by="IID") |>
@@ -110,9 +128,13 @@ roh_summ_cont<-function(data_1,data_2){
 #'This script summarize all the outcome of ```roh_summ_id()``` by any factor.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A file with each individual's factor
-#' @group_vars A vector with 1 or more factors do group with.
+#' @param group_vars A vector with 1 or more factors do group with.
 #' @return A data frame with different variables summarize for each continent.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' roh_summ_factor(rohsum,HGDP_pops,pop)
 #'
 roh_summ_factor<-function(data_1,data_2,group_vars){
   mer<-merge(data_1,data_2,by="IID") |>
@@ -149,20 +171,26 @@ roh_summ_factor<-function(data_1,data_2,group_vars){
 #' Figure of the total sum of different ROH lengths
 #'
 #'This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+#'(0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 #' @export
+#' @examples
+#' #Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
+#' ROH_class_fig(rohsum,pops)
 #'
 ROH_class_fig<-function(data_1,data_2){
   mer=merge(data_1,data_2,by="IID") |> dplyr::group_by(pop) |>
-    dplyr::summarise(cl03_05=mean(cl_03_05),
-                     cl05_1=mean(cl_05_1),
-                     cl1_2=mean(cl_1_2),
-                     cl2_4=mean(cl_2_4),
-                     cl4_8=mean(cl_4_8),
-                     cl8=mean(cl_8))
+    dplyr::summarise(cl03_05=mean(cl_03_05,na.rm = TRUE),
+                     cl05_1=mean(cl_05_1,na.rm = TRUE),
+                     cl1_2=mean(cl_1_2,na.rm = TRUE),
+                     cl2_4=mean(cl_2_4,na.rm = TRUE),
+                     cl4_8=mean(cl_4_8,na.rm = TRUE),
+                     cl8=mean(cl_8,na.rm = TRUE))
   df<-data.frame(mer$cl03_05,mer$cl05_1,mer$cl1_2,mer$cl2_4,mer$cl4_8,mer$cl8)
   df<-data.frame(Sum=unlist(df,use.names=FALSE))
   df<-dplyr::mutate(df,class=c(rep("cl03_05",length(unique(data_2$pop))),
@@ -171,7 +199,7 @@ ROH_class_fig<-function(data_1,data_2){
                                rep("cl2_4",length(unique(data_2$pop))),
                                rep("cl4_8",length(unique(data_2$pop))),
                                rep("cl8",length(unique(data_2$pop)))))
-  df<-dplyr::mutate(df,pop=rep(unique(data_2$pop),6))
+  df<-dplyr::mutate(df,pop=rep(unique(mer$pop),6))
   df<-merge(df,data_2,by="pop")
   df<-df[order(df$cont),]
   ggplot2::ggplot(data=df, ggplot2::aes(x=class, y=Sum, group=pop,)) +
@@ -180,23 +208,29 @@ ROH_class_fig<-function(data_1,data_2){
     ggplot2::theme_light()
 }
 ##############################
-#' RAW Data: Fig total Sum of ROH size classes.
+#' Raw Data: Fig total Sum of ROH size classes.
 #'
-#'This script creates a table with the raw data used in the function ROH_class_fig.
+#'This script creates a table with the raw data used in the function ROH_class_fig: average Sum of ROH for different length ROH classes.
+#'(0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
 #' @return A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
+#' ROH_class_data(rohsum,pops)
 #'
 ROH_class_data<-function(data_1,data_2){
   mer=merge(data_1,data_2,by="IID") |> dplyr::group_by(pop) |>
-    dplyr::summarise(cl03_05=mean(cl_03_05),
-                     cl05_1=mean(cl_05_1),
-                     cl1_2=mean(cl_1_2),
-                     cl2_4=mean(cl_2_4),
-                     cl4_8=mean(cl_4_8),
-                     cl8=mean(cl_8))
+    dplyr::summarise(cl03_05=mean(cl_03_05,na.rm = TRUE),
+                     cl05_1=mean(cl_05_1,na.rm = TRUE),
+                     cl1_2=mean(cl_1_2,na.rm = TRUE),
+                     cl2_4=mean(cl_2_4,na.rm = TRUE),
+                     cl4_8=mean(cl_4_8,na.rm = TRUE),
+                     cl8=mean(cl_8,na.rm = TRUE))
   df<-data.frame(mer$cl03_05,mer$cl05_1,mer$cl1_2,mer$cl2_4,mer$cl4_8,mer$cl8)
   df<-data.frame(Sum=unlist(df,use.names=FALSE))
   df<-dplyr::mutate(df,class=c(rep("cl03_05",length(unique(data_2$pop))),
@@ -205,7 +239,7 @@ ROH_class_data<-function(data_1,data_2){
                                rep("cl2_4",length(unique(data_2$pop))),
                                rep("cl4_8",length(unique(data_2$pop))),
                                rep("cl8",length(unique(data_2$pop)))))
-  df<-dplyr::mutate(df,pop=rep(unique(data_2$pop),6))
+  df<-dplyr::mutate(df,pop=rep(unique(mer$pop),6))
   df<-merge(df,data_2,by="pop")
   df<-df[order(df$cont),]
   return(df)
@@ -215,6 +249,9 @@ ROH_class_data<-function(data_1,data_2){
 #'
 #'This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
 #'It is possible to add the simulated number and sum of ROH for different consanguineous mating.
+#'Simulated data for the number and total length of ROHs (ROH > 1.5 Mb) in the offspring resulting from various consanguineous matings are also displayed.
+#'Points of varying colors represent offspring from different consanguineous relationships: green for second cousins, yellow for first cousins, orange for avuncular (including uncle-niece, aunt-nephew, and double first cousins), and red for incestuous relationships (such as brother-sister and parent-offspring).
+#'Each type of consanguineous mating is depicted through 5,000 simulations.
 #'The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
 #' @param data_1 The outcome of the function ```roh_sum_id()```.
 #' @param data_2 A data frame with three columns: IID, pop and cont. pop must contain each individual's population, cont must contain each individual's region or continent.
@@ -223,6 +260,11 @@ ROH_class_data<-function(data_1,data_2){
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
+#' n_vs_sum(rohsum,pops,pop,cont,simul=TRUE)
 #'
 n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
   Sum_long<-rnorm(5000,0.0152,0.009)*2881033
@@ -258,6 +300,12 @@ n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
 #' @param simul If true simulations of number and sum of ROH for different consanguinity mating is added.
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
+#' @examples
+#' # Obtaining basic ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' rohsum<-merge(rohsum,HGDP_het,by="IID")
+#' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
+#' fis_vs_froh(rohsum,pops,pop,cont)
 #'
 fis_vs_froh<-function(data_1,data_2,color,shape){
   mer<-merge(data_1,data_2,by="IID")

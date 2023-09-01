@@ -16,5 +16,13 @@ A figure of the of the total sum of ROH for different ROH size classes and conti
 }
 \description{
 This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+(0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 The classification is made by continents or regions.
+}
+\examples{
+#Obtaining basic ROH variables:
+rohsum<-roh_summ_id(KGenomes_hom)
+pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+ROH_class_fig(rohsum,pops)
+
 }

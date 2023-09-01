@@ -2,7 +2,7 @@
 % Please edit documentation in R/FUNCT.R
 \name{ROH_class_data}
 \alias{ROH_class_data}
-\title{RAW Data: Fig total Sum of ROH size classes.}
+\title{Raw Data: Fig total Sum of ROH size classes.}
 \usage{
 ROH_class_data(data_1, data_2)
 }
@@ -15,6 +15,14 @@ ROH_class_data(data_1, data_2)
 A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 }
 \description{
-This script creates a table with the raw data used in the function ROH_class_fig.
+This script creates a table with the raw data used in the function ROH_class_fig: average Sum of ROH for different length ROH classes.
+(0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 The classification is made by continents or regions.
+}
+\examples{
+# Obtaining basic ROH variables:
+rohsum<-roh_summ_id(KGenomes_hom)
+pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+ROH_class_data(rohsum,pops)
+
 }

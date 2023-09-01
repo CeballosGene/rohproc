@@ -23,5 +23,15 @@ A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 \description{
 This script creates a figure of the Number of ROH>=1.5Mb vs. Sum of ROH>=1.5Mb.
 It is possible to add the simulated number and sum of ROH for different consanguineous mating.
+Simulated data for the number and total length of ROHs (ROH > 1.5 Mb) in the offspring resulting from various consanguineous matings are also displayed.
+Points of varying colors represent offspring from different consanguineous relationships: green for second cousins, yellow for first cousins, orange for avuncular (including uncle-niece, aunt-nephew, and double first cousins), and red for incestuous relationships (such as brother-sister and parent-offspring).
+Each type of consanguineous mating is depicted through 5,000 simulations.
 The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
+}
+\examples{
+# Obtaining basic ROH variables:
+rohsum<-roh_summ_id(KGenomes_hom)
+pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+n_vs_sum(rohsum,pops,pop,cont,simul=TRUE)
+
 }

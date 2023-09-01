@@ -10,10 +10,18 @@ roh_summ_factor(data_1, data_2, group_vars)
 \item{data_1}{The outcome of the function ```roh_summ_id()```.}
 
 \item{data_2}{A file with each individual's factor}
+
+\item{group_vars}{A vector with 1 or more factors do group with.}
 }
 \value{
 A data frame with different variables summarize for each continent.
 }
 \description{
 This script summarize all the outcome of ```roh_summ_id()``` by any factor.
+}
+\examples{
+# Obtaining basic ROH variables:
+rohsum<-roh_summ_id(KGenomes_hom)
+roh_summ_factor(rohsum,KGenomes_pops,pop)
+
 }
