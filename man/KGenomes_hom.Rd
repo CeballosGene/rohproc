@@ -5,7 +5,7 @@
 \alias{KGenomes_hom}
 \title{ROH in the 1K Genomes.}
 \format{
-A data frame with 754450 rows and 13 variables:
+A data frame with 612139 rows and 13 variables:
 \describe{
   \item{IID}{individual id}
   \item{FID}{family id}
@@ -29,7 +29,7 @@ A data frame with 754450 rows and 13 variables:
 KGenomes_hom
 }
 \description{
-This dataset contains the PLINKs .hom file obtained using 1K Genomes array data.
+This dataset contains the PLINKs .hom file obtained using Human Genome Diversity Pannel.
 PLINKs parameters were set to:
 homozyg-window-snp 30.
 homozyg-window-het 1.

@@ -202,7 +202,7 @@ ROH_class_fig<-function(data_1,data_2){
   df<-dplyr::mutate(df,pop=rep(unique(mer$pop),6))
   df<-merge(df,data_2,by="pop")
   df<-df[order(df$cont),]
-  ggplot2::ggplot(data=df, ggplot2::aes(x=class, y=Sum, group=pop,)) +
+  ggplot2::ggplot(data=df|>dplyr::arrange(pop), ggplot2::aes(x=class, y=Sum, group=pop,)) +
     ggplot2::geom_line(ggplot2::aes(color=pop))+
     ggplot2::geom_point(ggplot2::aes(color=pop))+
     ggplot2::theme_light()
@@ -280,12 +280,12 @@ n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
   N_long<-rnorm(5000,40.7,4.5)
   data_in<-as.data.frame(cbind(Sum_long,N_long))
   mer<-merge(data_1,data_2,by="IID")
-  ggplot2::ggplot(mer,ggplot2::aes(x=Sum_long,y=N_long,color={{color}},shape={{shape}}))+
+  ggplot2::ggplot(data=mer|>dplyr::arrange(pop),ggplot2::aes(x=Sum_long,y=N_long,color={{color}},shape={{shape}}))+
     ggplot2::geom_abline(intercept= 0.4866, slope=0.000438, linetype="dashed") +
-    {if(simul)ggplot2::geom_point(data=data_sc, color="olivedrab1",shape=20,alpha = 0.25)}+
-    {if(simul)ggplot2::geom_point(data=data_fc,color="yellow1",shape=20,alpha=0.25)}+
-    {if(simul)ggplot2::geom_point(data=data_av,color="orangered1",shape=20,alpha=0.25)}+
-    {if(simul)ggplot2::geom_point(data=data_in,color="red1",shape=20,alpha=0.25)}+
+    {if(simul)ggplot2::geom_point(data=data_sc, color="olivedrab1",shape=20,alpha = 0.15)}+
+    {if(simul)ggplot2::geom_point(data=data_fc,color="yellow1",shape=20,alpha=0.15)}+
+    {if(simul)ggplot2::geom_point(data=data_av,color="orangered1",shape=20,alpha=0.15)}+
+    {if(simul)ggplot2::geom_point(data=data_in,color="red1",shape=20,alpha=0.15)}+
     ggplot2::geom_point()+
     ggplot2::theme_light()
 }
@@ -309,7 +309,7 @@ n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
 #'
 fis_vs_froh<-function(data_1,data_2,color,shape){
   mer<-merge(data_1,data_2,by="IID")
-  ggplot2::ggplot(mer, ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
+  ggplot2::ggplot(data=mer|>dplyr::arrange(pop), ggplot2::aes(x=Froh, y=Fis, color={{color}},shape={{shape}})) +
     ggplot2::geom_point()+
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed",color="red") +
     ggplot2::geom_abline(slope=1,intercept = 0, linetype = "dashed",color="red")+

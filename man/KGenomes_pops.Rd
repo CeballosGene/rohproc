@@ -5,7 +5,11 @@
 \alias{KGenomes_pops}
 \title{Populations 1K Genomes.}
 \format{
-
+A data frame with 57 rows and 2 variables:
+\describe{
+  \item{IID}{individual id}
+  \item{pop}{population}
+}
 }
 \source{
 \url{http://https://www.internationalgenome.org}

@@ -5,7 +5,7 @@
 \alias{KGenomes_cont}
 \title{Continents in 1K Genomes.}
 \format{
-A data frame with 19 rows and 2 variables:
+A data frame with 57 rows and 2 variables:
 \describe{
   \item{pop}{population}
   \item{cont}{continent}
