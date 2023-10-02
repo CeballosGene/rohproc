@@ -42,7 +42,7 @@ roh_summ_id<-function(data){
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Summarizing ROH variables:
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' roh_summ_pop(rohsum,HGDP_pops)
 #'
@@ -86,7 +86,7 @@ roh_summ_pop<-function(data_1,data_2){
 #' @return A data frame with different variables summarize for each continent.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Summarizing ROH variables by continent:
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 #' roh_summ_cont(rohsum,pops)
@@ -132,7 +132,7 @@ roh_summ_cont<-function(data_1,data_2){
 #' @return A data frame with different variables summarize for each continent.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Summarizing ROH variables by a general factor:
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' roh_summ_factor(rohsum,HGDP_pops,pop)
 #'
@@ -178,7 +178,7 @@ roh_summ_factor<-function(data_1,data_2,group_vars){
 #' @return A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 #' @export
 #' @examples
-#' #Obtaining basic ROH variables:
+#' # Figure distribution of the total sum of ROH for different ROH sizes.
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 #' ROH_class_fig(rohsum,pops)
@@ -218,7 +218,7 @@ ROH_class_fig<-function(data_1,data_2){
 #' @return A data frame with the raw data needed to build the figure of the total sum of ROH for different size classes.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Table distribution of the total sum of ROH for different ROH sizes.
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 #' ROH_class_data(rohsum,pops)
@@ -261,7 +261,7 @@ ROH_class_data<-function(data_1,data_2){
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Origin of ROH: Number of ROH vs Sum of ROH for ROH>1.5Mb
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 #' n_vs_sum(rohsum,pops,pop,cont,simul=TRUE)
@@ -301,7 +301,7 @@ n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
 #' @return A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 #' @export
 #' @examples
-#' # Obtaining basic ROH variables:
+#' # Origin of ROH: FIS vs FROH
 #' rohsum<-roh_summ_id(HGDP_hom)
 #' rohsum<-merge(rohsum,HGDP_het,by="IID")
 #' pops<-merge(HGDP_pops,HGDP_cont,by="pop")
@@ -335,11 +335,15 @@ poisson.roh_island<-function(pop,chr,p1,p2){
 #' Islands of ROH
 #'
 #'This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
+#'The resolution of the analysis is 10,000 bp: 10kb.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
 #' @param ChroNumber Chromosome number.
 #' @param population Name of the population in quotation marks ("").
 #' @return A table with the ROH islands.
 #' @export
+#' @examples
+#' # Obtaining ROH islands for a group of individuals:
+#' get_RHOi(HGDP_cl_Africa,1,"Africa")
 #'
 get_RHOi<-function(POP,ChroNumber,population){
   SizeWindow=10000
@@ -384,6 +388,7 @@ get_RHOi<-function(POP,ChroNumber,population){
   ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
   ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,n.ind,per.ind,pop)
   colnames(ROHi)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
+  ROHi<-subset(ROHi,ROHi$Length>0)
   return(ROHi)
 }
 ################################
@@ -443,8 +448,11 @@ RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
 #'
 #'This script prepares the dataset to search for runs of heterozygosity in the population.
 #' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
-#' @return A file ready to be used to fing RHZ.
+#' @return A file ready to be used to find RHZ.
 #' @export
+#' @examples
+#' # Obtaining RHZ: Preparing the dataset for a group of individuals:
+#' rhc_data_org(HGDP_cl_Africa)
 rhc_data_org<-function(POP){
   positions=help_RHZ[[1]]
   blacklist=help_RHZ[[2]]
@@ -511,7 +519,10 @@ rhc_data_org<-function(POP){
 #' @param population Name of the population in quotation marks ("").
 #' @return A table with the RHZ.
 #' @export
-#'
+#' @examples
+#' # Obtaining RHZ for a group of individuals:
+#' dat<-rhc_data_org(HGDP_cl_Africa)
+#' get_RHZ(dat,1,85,"Africa")
 get_RHZ<-function(DF,ChroNumber,PR,population){
   SizeWindow=10000
   if(ChroNumber==1){lenChro=250000000}
@@ -553,6 +564,7 @@ get_RHZ<-function(DF,ChroNumber,PR,population){
   OUT<-dplyr::mutate(OUT,pop=rep(population,length(OUT$Chr)))
   OUT<-dplyr::select(OUT,Chr,pos1,pos2,len,n.ind,per.ind,pop)
   colnames(OUT)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
+  OUT<-subset(OUT,OUT$Length>0)
   return(OUT)
 }
 ################################
@@ -589,29 +601,6 @@ rhz_summ_pop<-function(mypath){
                      max_P_Individuals=max(P_Individuals))
   out<-as.data.frame(dat)
   return(out)
-}
-################################
-#' Searching for Protein Coding Genes
-#'
-#'This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package
-#' @param DATA A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()```.
-#' @return A table with the Protein coding genes.
-#' @export
-get_Prot<-function(DATA){
-  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="www.ensembl.org")
-  attributes = biomaRt::listAttributes(mart)
-  attributes <- c("ensembl_gene_id","chromosome_name","start_position","end_position",
-                  "gene_biotype","external_gene_name","description")
-  filters <- c("chromosome_name","start","end")
-  ann<-list()
-  gen<-list()
-  for (i in seq(1,length(DATA$Chr),1)){
-    ann[[i]]<-list(chromosome=DATA[i,1],start=DATA[i,2],end=DATA[i,3])
-    gen[[i]]<-biomaRt::getBM(attributes=attributes, filters=filters, values=ann[[i]], mart=mart)
-    gen[[i]]<-gen[[i]][gen[[i]]$gene_biotype=="protein_coding",]
-  }
-  genes<- plyr::ldply(gen, data.frame)
-  return(genes)
 }
 ##############################
 #' Common and Unique regions
@@ -714,6 +703,30 @@ rohi_rohz_genome<-function(data_1,data_2,pop){
     ggplot2::theme_light()
 }
 ##############################
+#' Searching for Protein Coding Genes
+#'
+#'This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package
+#' @param DATA A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()```.
+#' @return A table with the Protein coding genes.
+#' @export
+#'
+get_Prot<-function(DATA){
+  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="www.ensembl.org")
+  attributes = biomaRt::listAttributes(mart)
+  attributes <- c("ensembl_gene_id","chromosome_name","start_position","end_position",
+                  "gene_biotype","external_gene_name","description")
+  filters <- c("chromosome_name","start","end")
+  ann<-list()
+  gen<-list()
+  for (i in seq(1,length(DATA$Chr),1)){
+    ann[[i]]<-list(chromosome=DATA[i,1],start=DATA[i,2],end=DATA[i,3])
+    gen[[i]]<-biomaRt::getBM(attributes=attributes, filters=filters, values=ann[[i]], mart=mart)
+    gen[[i]]<-gen[[i]][gen[[i]]$gene_biotype=="protein_coding",]
+  }
+  genes<- plyr::ldply(gen, data.frame)
+  return(genes)
+}
+################################
 #library(roxygen2)
 #roxygenise()
 

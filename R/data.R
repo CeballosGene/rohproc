@@ -23,7 +23,7 @@
 #'   \item{PHOM}{}
 #'   \item{PHET}{}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_hom"
 
 #' Populations Human Genome Diversity Panel.
@@ -34,7 +34,7 @@
 #'   \item{IID}{individual id}
 #'   \item{pop}{population}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_pops"
 
 #' Continents in Human Genome Diversity Panel.
@@ -45,7 +45,7 @@
 #'   \item{pop}{population}
 #'   \item{cont}{continent}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cont"
 
 #' FIS in Human Genome Diversity Panel.
@@ -56,7 +56,7 @@
 #'   \item{IID}{individual id}
 #'   \item{Fis}{FIS estimate obtained using PLINK's --het flag}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_het"
 
 #' Cluster Africa Human Genome Diversity Panel.
@@ -87,7 +87,7 @@
 #'   \item{CLUSTER}{}
 #'   \item{NAME_CLUS}{}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_Africa"
 
 #' Cluster East Asia Human Genome Diversity Panel.
@@ -118,7 +118,7 @@
 #'   \item{CLUSTER}{}
 #'   \item{NAME_CLUS}{}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_EastAsia"
 
 #' Cluster Europe Human Genome Diversity Panel.
@@ -149,7 +149,7 @@
 #'   \item{CLUSTER}{}
 #'   \item{NAME_CLUS}{}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_Europe"
 
 #' Cluster Middle East Human Genome Diversity Panel.
@@ -180,5 +180,5 @@
 #'   \item{CLUSTER}{}
 #'   \item{NAME_CLUS}{}
 #' }
-#' @source \url{http://https://www.internationalgenome.org}
+#' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_MiddleEast"
