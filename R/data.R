@@ -7,7 +7,8 @@
 #' homozyg-snp 30.
 #' homozyg-kb 300.
 #' homozyg-density 30.
-#' @format A data frame with 612139 rows and 13 variables:
+#' @format ## HGDP_hom
+#' A data frame with 612139 rows and 13 variables:
 #' \describe{
 #'   \item{IID}{individual id}
 #'   \item{FID}{family id}
