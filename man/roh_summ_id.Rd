@@ -24,6 +24,6 @@ The homozygosity outside of ROH, referred to as Foutroh.
 }
 \examples{
 # Obtaining basic ROH variables:
-roh_summ_id(KGenomes_hom)
+roh_summ_id(HGDP_hom)
 
 }

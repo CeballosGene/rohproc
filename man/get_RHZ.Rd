@@ -22,3 +22,8 @@ A table with the RHZ.
 \description{
 This script searches for Regions of Heterozygosity in a population
 }
+\examples{
+# Obtaining RHZ for a group of individuals:
+dat<-rhc_data_org(HGDP_cl_Africa)
+get_RHZ(dat,1,85,"Africa")
+}

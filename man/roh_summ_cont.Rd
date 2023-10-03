@@ -18,9 +18,9 @@ A data frame with different variables summarize for each continent.
 This script summarize all the outcome of ```roh_summ_id()``` by population.
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+# Summarizing ROH variables by continent:
+rohsum<-roh_summ_id(HGDP_hom)
+pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 roh_summ_cont(rohsum,pops)
 
 }

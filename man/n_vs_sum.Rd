@@ -29,9 +29,9 @@ Each type of consanguineous mating is depicted through 5,000 simulations.
 The dashed diagonal line represents the regression line of N vs S of ROH for two admixed populations from the 1K genomes: ACB and ASW
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+# Origin of ROH: Number of ROH vs Sum of ROH for ROH>1.5Mb
+rohsum<-roh_summ_id(HGDP_hom)
+pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 n_vs_sum(rohsum,pops,pop,cont,simul=TRUE)
 
 }

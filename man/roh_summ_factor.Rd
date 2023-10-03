@@ -20,8 +20,8 @@ A data frame with different variables summarize for each continent.
 This script summarize all the outcome of ```roh_summ_id()``` by any factor.
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-roh_summ_factor(rohsum,KGenomes_pops,pop)
+# Summarizing ROH variables by a general factor:
+rohsum<-roh_summ_id(HGDP_hom)
+roh_summ_factor(rohsum,HGDP_pops,pop)
 
 }

@@ -24,10 +24,10 @@ A figure of the Number vs the Sum of ROH for ROH larger than 1.5Mb.
 This script creates a scatter plot of FIS vs FROH.
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-rohsum<-merge(rohsum,KGenomes_het,by="IID")
-pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+# Origin of ROH: FIS vs FROH
+rohsum<-roh_summ_id(HGDP_hom)
+rohsum<-merge(rohsum,HGDP_het,by="IID")
+pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 fis_vs_froh(rohsum,pops,pop,cont)
 
 }

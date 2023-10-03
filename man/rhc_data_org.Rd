@@ -10,8 +10,12 @@ rhc_data_org(POP)
 \item{POP}{A .hom file from PLINK with all the individuals belonging to the same group or population.}
 }
 \value{
-A file ready to be used to fing RHZ.
+A file ready to be used to find RHZ.
 }
 \description{
 This script prepares the dataset to search for runs of heterozygosity in the population.
+}
+\examples{
+# Obtaining RHZ: Preparing the dataset for a group of individuals:
+rhc_data_org(HGDP_cl_Africa)
 }

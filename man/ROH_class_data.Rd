@@ -20,9 +20,9 @@ This script creates a table with the raw data used in the function ROH_class_fig
 The classification is made by continents or regions.
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-pops<-merge(KGenomes_pops,KGenomes_cont,by="pop")
+# Table distribution of the total sum of ROH for different ROH sizes.
+rohsum<-roh_summ_id(HGDP_hom)
+pops<-merge(HGDP_pops,HGDP_cont,by="pop")
 ROH_class_data(rohsum,pops)
 
 }

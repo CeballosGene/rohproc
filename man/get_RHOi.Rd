@@ -18,4 +18,10 @@ A table with the ROH islands.
 }
 \description{
 This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
+The resolution of the analysis is 10,000 bp: 10kb.
+}
+\examples{
+# Obtaining ROH islands for a group of individuals:
+get_RHOi(HGDP_cl_Africa,1,"Africa")
+
 }

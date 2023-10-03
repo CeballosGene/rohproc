@@ -18,8 +18,8 @@ A data frame with different variables summarize for each population.
 This script summarize all the outcome of ```roh_summ_id()``` by population.
 }
 \examples{
-# Obtaining basic ROH variables:
-rohsum<-roh_summ_id(KGenomes_hom)
-roh_summ_pop(rohsum,KGenomes_pops)
+# Summarizing ROH variables:
+rohsum<-roh_summ_id(HGDP_hom)
+roh_summ_pop(rohsum,HGDP_pops)
 
 }
