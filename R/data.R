@@ -183,3 +183,18 @@
 #' }
 #' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_MiddleEast"
+
+#' ROH islands Human Genome Diversity Panel.
+#'
+#' This dataset contains the ROH islands of different groups of the Human Genome Diversity Panel.
+#' @format A data frame with 3104 rows and 7 variables.
+#' \describe{
+#'   \item{Chr}{Chromosome}
+#'   \item{Start}{Starting possition of the ROH island}
+#'   \item{End}{Ending possition of the ROH island}
+#'   \item{Length}{Length in Mb of the ROH island}
+#'   \item{N_Individuals}{Number of individuals that have a ROH in that genomic location}
+#'   \item{P_Individuals}{Proportion, in \%, of the individuals in the sample that have a ROH in that genomic location}
+#'   \item{Population}{Name of the population}
+#' }
+"ROHi_HGDP"
