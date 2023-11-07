@@ -18,6 +18,6 @@ A data frame with 57 rows and 2 variables:
 HGDP_pops
 }
 \description{
-This dataset contains the classification in populations for all the individuals in the 1K Genomes dataset:
+This dataset contains the classification in populations for all the individuals in the HGD dataset:
 }
 \keyword{datasets}

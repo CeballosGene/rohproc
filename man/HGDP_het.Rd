@@ -18,6 +18,6 @@ A data frame with 936 rows and 2 variables:
 HGDP_het
 }
 \description{
-This dataset contains the average FIS stimates for each individual in the 1K Genomes dataset:
+This dataset contains the average FIS estimates for each individual in the HGD dataset:
 }
 \keyword{datasets}

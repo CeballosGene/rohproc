@@ -15,7 +15,7 @@ roh_summ_cont(data_1, data_2)
 A data frame with different variables summarize for each continent.
 }
 \description{
-This script summarize all the outcome of ```roh_summ_id()``` by population.
+This function summarize all the outcome of ```roh_summ_id()``` by continent.
 }
 \examples{
 # Summarizing ROH variables by continent:

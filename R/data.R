@@ -29,7 +29,7 @@
 
 #' Populations Human Genome Diversity Panel.
 #'
-#' This dataset contains the classification in populations for all the individuals in the 1K Genomes dataset:
+#' This dataset contains the classification in populations for all the individuals in the HGD dataset:
 #' @format A data frame with 57 rows and 2 variables:
 #' \describe{
 #'   \item{IID}{individual id}
@@ -40,7 +40,7 @@
 
 #' Continents in Human Genome Diversity Panel.
 #'
-#' This dataset contains the classification in continents for all the populations in the 1K Genomes dataset:
+#' This dataset contains the classification in continents for all the populations in the HGD dataset:
 #' @format A data frame with 57 rows and 2 variables:
 #' \describe{
 #'   \item{pop}{population}
@@ -51,7 +51,7 @@
 
 #' FIS in Human Genome Diversity Panel.
 #'
-#' This dataset contains the average FIS stimates for each individual in the 1K Genomes dataset:
+#' This dataset contains the average FIS estimates for each individual in the HGD dataset:
 #' @format A data frame with 936 rows and 2 variables:
 #' \describe{
 #'   \item{IID}{individual id}

@@ -1,7 +1,7 @@
 ##############################
 #' ROH variables
 #'
-#'This script extracts various valuable variables from a PLINK home file, including:
+#'This function extracts various valuable variables from a PLINK home file, including:
 #'The total sum of ROH (Runs of Homozygosity) greater than or equal to 1.5Mb. (Sum_long).
 #'The count of ROH greater than or equal to 1.5Mb (N_long).
 #'The total sum of ROH less than 1.5Mb (Sum_short).
@@ -36,7 +36,7 @@ roh_summ_id<-function(data){
 ##############################
 #' Summarize by Population
 #'
-#'This script summarize all the outcome of ```roh_summ_id()``` by population.
+#'This function summarize all the outcome of ```roh_summ_id()``` by population.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population
 #' @return A data frame with different variables summarize for each population.
@@ -80,7 +80,7 @@ roh_summ_pop<-function(data_1,data_2){
 ##############################
 #' Summarize by Continent
 #'
-#'This script summarize all the outcome of ```roh_summ_id()``` by population.
+#'This function summarize all the outcome of ```roh_summ_id()``` by continent.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A file with two columns: "IID", "cont". cont must contain each individual's continent
 #' @return A data frame with different variables summarize for each continent.
@@ -125,7 +125,7 @@ roh_summ_cont<-function(data_1,data_2){
 ##############################
 #' Summarize by factor
 #'
-#'This script summarize all the outcome of ```roh_summ_id()``` by any factor.
+#'This function summarize all the outcome of ```roh_summ_id()``` by any factor.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
 #' @param data_2 A file with each individual's factor
 #' @param group_vars A vector with 1 or more factors do group with.
@@ -170,7 +170,7 @@ roh_summ_factor<-function(data_1,data_2,group_vars){
 ##############################
 #' Figure of the total sum of different ROH lengths
 #'
-#'This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+#'This function creates a figure of the population's average Sum of ROH for different length ROH classes.
 #'(0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 #'The classification is made by continents or regions.
 #' @param data_1 The outcome of the function ```roh_summ_id()```.
@@ -205,7 +205,8 @@ ROH_class_fig<-function(data_1,data_2){
   ggplot2::ggplot(data=df|>dplyr::arrange(pop), ggplot2::aes(x=class, y=Sum, group=pop,)) +
     ggplot2::geom_line(ggplot2::aes(color=pop))+
     ggplot2::geom_point(ggplot2::aes(color=pop))+
-    ggplot2::theme_light()
+    ggplot2::theme_light()+
+    ggplot2::scale_x_discrete(labels=c("0.3MB≤ROH<0.5", "0.5≤ROH<1", "1≤ROH<2", "2≤ROH<4", "4≤ROH<8", "ROH≥8MB"))
 }
 ##############################
 #' Raw Data: Fig total Sum of ROH size classes.
@@ -287,7 +288,8 @@ n_vs_sum<-function(data_1,data_2,color,shape,simul=TRUE){
     {if(simul)ggplot2::geom_point(data=data_av,color="orangered1",shape=20,alpha=0.15)}+
     {if(simul)ggplot2::geom_point(data=data_in,color="red1",shape=20,alpha=0.15)}+
     ggplot2::geom_point()+
-    ggplot2::theme_light()
+    ggplot2::theme_light()+
+    ggplot2::labs(title = "", x = "Sum ROH>1.5Mb", y = "Number ROH>15.Mb")
 }
 ##############################
 # FIS vs FROH
@@ -313,7 +315,8 @@ fis_vs_froh<-function(data_1,data_2,color,shape){
     ggplot2::geom_point()+
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed",color="red") +
     ggplot2::geom_abline(slope=1,intercept = 0, linetype = "dashed",color="red")+
-    ggplot2::theme_light()
+    ggplot2::theme_light()+
+    ggplot2::labs(title = "", x = "FROH", y = "FIS")
 }
 ############################
 # FUNCTIONS ROHi ----
@@ -392,19 +395,52 @@ get_RHOi<-function(POP,ChroNumber,population){
   return(ROHi)
 }
 ################################
-#' Summarize ROHi by Population
+#' Summarize ROHi by Population and by folder
 #'
 #'This script summarize all the outcome of get_ROHi by population.
-#' @param mypath Path to the folder with the outcomes of the get_RHOi() function.
+#' @param mypath Path to the folder with the outcomes of the ```get_RHOi()``` function.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rohi_summ_pop<-function(mypath){
+rohi_summ_pop_path<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
     dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
   }
+  dat<-dat|>
+    dplyr::group_by(Population)|>
+    dplyr::summarise(Number=length(Chr),
+                     mean_length=mean(Length),
+                     sd_length=sd(Length),
+                     median_Length=median(Length),
+                     iqr_Length=IQR(Length),
+                     max_Length=max(Length),
+                     mean_N_Individuals=mean(N_Individuals),
+                     sd_N_Individuals=sd(N_Individuals),
+                     median_N_Individuals=median(N_Individuals),
+                     iqr_N_Individuals=IQR(N_Individuals),
+                     max_N_Individuals=max(N_Individuals),
+                     mean_P_Individuals=mean(P_Individuals),
+                     sd_P_Individuals=sd(P_Individuals),
+                     median_P_Individuals=median(P_Individuals),
+                     iqr_P_Individuals=IQR(P_Individuals),
+                     max_P_Individuals=max(P_Individuals))
+  out<-as.data.frame(dat)
+  return(out)
+}
+################################
+#' Summarize ROHi by Population and by file
+#'
+#'This script summarize all the outcome of get_ROHi by population.
+#' @param dat DF with the outcomes of the ```get_RHOi()``` function for different populations.
+#' @return A data frame with different variables summarize for each population.
+#' @export
+#' @examples
+#' # Summarize ROH islands for a group of individuals:
+#' rohi_summ_pop_file(HGDP_ROHi)
+#'
+rohi_summ_pop_file<-function(dat){
   dat<-dat|>
     dplyr::group_by(Population)|>
     dplyr::summarise(Number=length(Chr),
@@ -513,10 +549,9 @@ rhc_data_org<-function(POP){
 #'
 #'This script searches for Regions of Heterozygosity in a population
 #' @param DF The data frame obtained from the function ```rhc_data_org()```.
-#' @param ChroNumber Chromosome number
-#' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
-#' in that window. 90%: 10% of people with homozygous regions in that window.
-#' @param population Name of the population in quotation marks ("").
+#' @param ChroNumber Chromosome number.
+#' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype in that window.
+#' @param population Name of the population in quotation marks.
 #' @return A table with the RHZ.
 #' @export
 #' @examples

@@ -13,7 +13,7 @@ roh_summ_id(data)
 A data frame with the variable previously described.
 }
 \description{
-This script extracts various valuable variables from a PLINK home file, including:
+This function extracts various valuable variables from a PLINK home file, including:
 The total sum of ROH (Runs of Homozygosity) greater than or equal to 1.5Mb. (Sum_long).
 The count of ROH greater than or equal to 1.5Mb (N_long).
 The total sum of ROH less than 1.5Mb (Sum_short).

@@ -17,7 +17,7 @@ roh_summ_factor(data_1, data_2, group_vars)
 A data frame with different variables summarize for each continent.
 }
 \description{
-This script summarize all the outcome of ```roh_summ_id()``` by any factor.
+This function summarize all the outcome of ```roh_summ_id()``` by any factor.
 }
 \examples{
 # Summarizing ROH variables by a general factor:

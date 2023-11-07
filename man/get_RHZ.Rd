@@ -9,12 +9,11 @@ get_RHZ(DF, ChroNumber, PR, population)
 \arguments{
 \item{DF}{The data frame obtained from the function ```rhc_data_org()```.}
 
-\item{ChroNumber}{Chromosome number}
+\item{ChroNumber}{Chromosome number.}
 
-\item{PR}{Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype
-in that window. 90%: 10% of people with homozygous regions in that window.}
+\item{PR}{Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype in that window.}
 
-\item{population}{Name of the population in quotation marks ("").}
+\item{population}{Name of the population in quotation marks.}
 }
 \value{
 A table with the RHZ.

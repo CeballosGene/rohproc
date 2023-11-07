@@ -15,7 +15,7 @@ ROH_class_fig(data_1, data_2)
 A figure of the of the total sum of ROH for different ROH size classes and continents or regions.
 }
 \description{
-This script creates a figure of the population's average Sum of ROH for different length ROH classes.
+This function creates a figure of the population's average Sum of ROH for different length ROH classes.
 (0.3MB≤ROH<0.5, 0.5≤ROH<1, 1≤ROH<2, 2≤ROH4, 4≤ROH<8, ROH≥8MB).
 The classification is made by continents or regions.
 }
