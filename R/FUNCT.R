@@ -438,7 +438,7 @@ rohi_summ_pop_path<-function(mypath){
 #' @export
 #' @examples
 #' # Summarize ROH islands for a group of individuals:
-#' rohi_summ_pop_file(HGDP_ROHi)
+#' rohi_summ_pop_file(ROHi_HGDP)
 #'
 rohi_summ_pop_file<-function(dat){
   dat<-dat|>
@@ -489,6 +489,7 @@ RemoveBlackList<-function( Start,End, Chro, IID, blacklistChro){
 #' @examples
 #' # Obtaining RHZ: Preparing the dataset for a group of individuals:
 #' rhc_data_org(HGDP_cl_Africa)
+#'
 rhc_data_org<-function(POP){
   positions=help_RHZ[[1]]
   blacklist=help_RHZ[[2]]
@@ -550,7 +551,7 @@ rhc_data_org<-function(POP){
 #'This script searches for Regions of Heterozygosity in a population
 #' @param DF The data frame obtained from the function ```rhc_data_org()```.
 #' @param ChroNumber Chromosome number.
-#' @param PR Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype in that window.
+#' @param PR Percentage of population without ROH in a particular window. 100 percent: no individual with homozygous haplotype in that window.
 #' @param population Name of the population in quotation marks.
 #' @return A table with the RHZ.
 #' @export
@@ -558,6 +559,7 @@ rhc_data_org<-function(POP){
 #' # Obtaining RHZ for a group of individuals:
 #' dat<-rhc_data_org(HGDP_cl_Africa)
 #' get_RHZ(dat,1,85,"Africa")
+#'
 get_RHZ<-function(DF,ChroNumber,PR,population){
   SizeWindow=10000
   if(ChroNumber==1){lenChro=250000000}
@@ -603,19 +605,52 @@ get_RHZ<-function(DF,ChroNumber,PR,population){
   return(OUT)
 }
 ################################
-#' Summarize RHZ by Population
+#' Summarize RHZ by Population and by folder
 #'
 #'This script summarize all the outcome of RHZ by population.
 #' @param mypath Path to the folder with the outcomes of the ```get_RHZ()``` function.
 #' @return A data frame with different variables summarize for each population.
 #' @export
 #'
-rhz_summ_pop<-function(mypath){
+rhz_summ_pop_path<-function(mypath){
   files_list <- list.files(path=mypath, full.names=TRUE)
   dat <- data.frame()
   for (i in 1:length(files_list)) {
     dat <- rbind(dat, read.csv((files_list[i]),header=TRUE))
   }
+  dat<-dat|>
+    dplyr::group_by(Population)|>
+    dplyr::summarise(Number=length(Chr),
+                     mean_length=mean(Length),
+                     sd_length=sd(Length),
+                     median_Length=median(Length),
+                     iqr_Length=IQR(Length),
+                     max_Length=max(Length),
+                     mean_N_Individuals=mean(N_Individuals),
+                     sd_N_Individuals=sd(N_Individuals),
+                     median_N_Individuals=median(N_Individuals),
+                     iqr_N_Individuals=IQR(N_Individuals),
+                     max_N_Individuals=max(N_Individuals),
+                     mean_P_Individuals=mean(P_Individuals),
+                     sd_P_Individuals=sd(P_Individuals),
+                     median_P_Individuals=median(P_Individuals),
+                     iqr_P_Individuals=IQR(P_Individuals),
+                     max_P_Individuals=max(P_Individuals))
+  out<-as.data.frame(dat)
+  return(out)
+}
+################################
+#' Summarize RHZ by Population and by file
+#'
+#'This script summarize all the outcome of RHZ by population.
+#' @param mypath Path to the folder with the outcomes of the ```get_RHZ()``` function.
+#' @return A data frame with different variables summarize for each population.
+#' @export
+#' @examples
+#' # Summarize ROH islands for a group of individuals:
+#' rhz_summ_pop_file(RHZ_HGDP)
+#'
+rhz_summ_pop_file<-function(dat){
   dat<-dat|>
     dplyr::group_by(Population)|>
     dplyr::summarise(Number=length(Chr),
@@ -648,6 +683,14 @@ rhz_summ_pop<-function(mypath){
 #' @param class Type of outcomes we want. Two choices: "Unique" or "Common". n quotation marks ("").
 #' @return Pairwise common and Unique regions
 #' @export
+#' @examples
+#' # Obtaining common and unique ROHi for Europe and Africa:
+#' eu<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Europe")
+#' af<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Africa")
+#' eur_uni<-comm_uni(eu,af,"Europe","Unique")
+#' afr_uni<-comm_uni(eu,af,"Africa","Unique")
+#' eur_uni
+#' afr_uni
 comm_uni<-function(data_1,data_2,pop,class){
   Data<-rbind(data_1,data_2)
   CmtChro=1
@@ -702,6 +745,10 @@ comm_uni<-function(data_1,data_2,pop,class){
 #' @param pop target population you want to get the outcome, in quotation marks ("").
 #' @return Figure of the ROHi or RHZ in a popualtion
 #' @export
+#' @examples
+#' # Obtaining ROHi representation for the European individuals:
+#' rohi_genome(ROHi_HGDP,"Europe")
+#'
 rohi_genome<-function(data_1,pop){
   dat_1<-subset(data_1,data_1$Population=="pop")
   positions=help_RHZ[[1]]
@@ -723,7 +770,11 @@ rohi_genome<-function(data_1,pop){
 #' @param pop population to be represented.
 #' @return Figure of the ROHi and RHZ in a popualtion
 #' @export
-rohi_rohz_genome<-function(data_1,data_2,pop){
+#' @examples
+#' # Obtaining ROHi and RHZ representations for the European individuals:
+#' rohi_rhz_genome(ROHi_HGDP,RHZ_HGDP,"Europe")
+#'
+rohi_rhz_genome<-function(data_1,data_2,pop){
   dat_1<-subset(data_1,data_1$Population=="pop")
   dat_2<-subset(data_2,data_2$Population=="pop")
   positions=help_RHZ[[1]]
@@ -744,9 +795,14 @@ rohi_rohz_genome<-function(data_1,data_2,pop){
 #' @param DATA A file obtained from the functions ```get_ROHi()``` or ```get_RHZ()```.
 #' @return A table with the Protein coding genes.
 #' @export
+#' @examples
+#' # Obtaining the proptein coding genes present in the first 20 European ROHi:
+#' eu<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Europe")
+#' dat<-head(eu,20)
+#' get_Prot(dat)
 #'
 get_Prot<-function(DATA){
-  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="www.ensembl.org")
+  mart <- biomaRt::useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl", host="https://www.ensembl.org")
   attributes = biomaRt::listAttributes(mart)
   attributes <- c("ensembl_gene_id","chromosome_name","start_position","end_position",
                   "gene_biotype","external_gene_name","description")
@@ -764,4 +820,3 @@ get_Prot<-function(DATA){
 ################################
 #library(roxygen2)
 #roxygenise()
-

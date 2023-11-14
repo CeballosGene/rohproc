@@ -17,3 +17,8 @@ Figure of the ROHi or RHZ in a popualtion
 \description{
 This script creates a genomic representation of the ROH islands or Regions of Heterozygosity (RHZ).
 }
+\examples{
+# Obtaining ROHi representation for the European individuals:
+rohi_genome(ROHi_HGDP,"Europe")
+
+}

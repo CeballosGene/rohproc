@@ -3,7 +3,7 @@
 \docType{data}
 \name{ROHi_HGDP}
 \alias{ROHi_HGDP}
-\title{ROH islands Human Genome Diversity Panel.}
+\title{ROH islands in Human Genome Diversity Panel.}
 \format{
 A data frame with 3104 rows and 7 variables.
 \describe{

@@ -22,3 +22,12 @@ Pairwise common and Unique regions
 This function finds the unique and common ROH islands or regions of heterozygosity between two
 populations.
 }
+\examples{
+# Obtaining common and unique ROHi for Europe and Africa:
+eu<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Europe")
+af<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Africa")
+eur_uni<-comm_uni(eu,af,"Europe","Unique")
+afr_uni<-comm_uni(eu,af,"Africa","Unique")
+eur_uni
+afr_uni
+}

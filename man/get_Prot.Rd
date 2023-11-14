@@ -15,3 +15,10 @@ A table with the Protein coding genes.
 \description{
 This script harvest protein coding genes from the ROHi or RHZ regions. It uses biomart package
 }
+\examples{
+# Obtaining the proptein coding genes present in the first 20 European ROHi:
+eu<-subset(ROHi_HGDP,ROHi_HGDP$Population=="Europe")
+dat<-head(eu,20)
+get_Prot(dat)
+
+}

@@ -18,4 +18,5 @@ This script prepares the dataset to search for runs of heterozygosity in the pop
 \examples{
 # Obtaining RHZ: Preparing the dataset for a group of individuals:
 rhc_data_org(HGDP_cl_Africa)
+
 }

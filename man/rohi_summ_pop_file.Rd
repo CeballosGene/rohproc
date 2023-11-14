@@ -17,6 +17,6 @@ This script summarize all the outcome of get_ROHi by population.
 }
 \examples{
 # Summarize ROH islands for a group of individuals:
-rohi_summ_pop_file(HGDP_ROHi)
+rohi_summ_pop_file(ROHi_HGDP)
 
 }

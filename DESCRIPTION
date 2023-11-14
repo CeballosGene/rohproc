@@ -20,4 +20,5 @@ Imports:
     ggplot2,
     purrr,
     skimr,
-    stringr
+    stringr,
+    biomaRt

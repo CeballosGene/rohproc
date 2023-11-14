@@ -11,7 +11,7 @@ get_RHZ(DF, ChroNumber, PR, population)
 
 \item{ChroNumber}{Chromosome number.}
 
-\item{PR}{Percentage of population without ROH in a particular window. 100%: no individual with homozygous haplotype in that window.}
+\item{PR}{Percentage of population without ROH in a particular window. 100 percent: no individual with homozygous haplotype in that window.}
 
 \item{population}{Name of the population in quotation marks.}
 }
@@ -25,4 +25,5 @@ This script searches for Regions of Heterozygosity in a population
 # Obtaining RHZ for a group of individuals:
 dat<-rhc_data_org(HGDP_cl_Africa)
 get_RHZ(dat,1,85,"Africa")
+
 }

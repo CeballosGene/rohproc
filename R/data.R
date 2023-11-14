@@ -184,7 +184,7 @@
 #' @source \url{https://cephb.fr/en/hgdp_panel.php}
 "HGDP_cl_MiddleEast"
 
-#' ROH islands Human Genome Diversity Panel.
+#' ROH islands in Human Genome Diversity Panel.
 #'
 #' This dataset contains the ROH islands of different groups of the Human Genome Diversity Panel.
 #' @format A data frame with 3104 rows and 7 variables.
@@ -198,3 +198,28 @@
 #'   \item{Population}{Name of the population}
 #' }
 "ROHi_HGDP"
+
+#' Runs of Heterozygosity RHZ in Human Genome Diversity Panel.
+#'
+#' This dataset contains the Runs of Heterozygosity of different groups of the Human Genome Diversity Panel.
+#' @format A data frame with 3104 rows and 7 variables.
+#' \describe{
+#'   \item{Chr}{Chromosome}
+#'   \item{Start}{Starting possition of the RHZ}
+#'   \item{End}{Ending possition of the RHZ}
+#'   \item{Length}{Length in Mb of the RHZ}
+#'   \item{N_Individuals}{Number of individuals that do not have a ROH in that genomic location, so its in RHZ}
+#'   \item{P_Individuals}{Proportion, in \%, of the individuals in the sample that do not have a ROH in that genomic location}
+#'   \item{Population}{Name of the population}
+#' }
+"RHZ_HGDP"
+
+
+
+
+
+
+
+
+
+
