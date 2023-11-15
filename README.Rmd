@@ -31,9 +31,11 @@ This bash script will generate a .hom file with all the information needed. This
 
 ### Data avaliable with this package.
 
-This package includes different datasets.
+This package includes different datasets based on the [Human Genome Diversity Pproject](https://www.internationalgenome.org/data-portal/data-collection/hgdp) (HGDP).
 <br><br>
-*HGDP_hom*: .hom file with the PLINK's ROH analysis of 54 populations belonging to the [Human Genome Diversity Panel](https://www.internationalgenome.org/data-portal/data-collection/hgdp).
+![Human Genome Diversity Project](man/figures/fig_7.jpg)
+<br><br>
+*HGDP_hom*: .hom file with the PLINK's ROH analysis of 54 populations belonging to the HGDP.
 <br><br>
 *HGDP_pops*: classification in populations for all the individuals belonging to the HGDP. 
 <br><br>

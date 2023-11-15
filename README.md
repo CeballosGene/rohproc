@@ -1,7 +1,7 @@
 rohproc R Package
 ================
 Francisco C. Ceballos
-2023-11-14
+2023-11-15
 
 - [Package Overview.](#package-overview)
   - [Data avaliable with this
@@ -48,24 +48,25 @@ different summary outcomes, figures and other features.
 
 ### Data avaliable with this package.
 
-This package includes different datasets. <br><br> *HGDP_hom*: .hom file
-with the PLINK’s ROH analysis of 54 populations belonging to the [Human
-Genome Diversity
-Panel](https://www.internationalgenome.org/data-portal/data-collection/hgdp).
-<br><br> *HGDP_pops*: classification in populations for all the
-individuals belonging to the HGDP. <br><br> *HGDP_cont*: classification
-in continents for all the individuals belonging to the HGDP <br><br>
-*HGDP_het*: average FIS estimates for each individual in the HGD
-dataset: <br><br> *HGDP_cl_Africa*: PLINKs .hom file obtained using
-Human Genome Diversity Panel. Cluster Africa. <br><br>
-*HGDP_cl_EastAsia*: PLINKs .hom file obtained using Human Genome
-Diversity Panel. Cluster East Asia. <br><br> *HGDP_cl_Europe*: PLINKs
-.hom file obtained using Human Genome Diversity Panel. Cluster Europe.
-<br><br> *HGDP_cl_MiddleEast*: PLINKs .hom file obtained using Human
-Genome Diversity Panel. Middle East. <br><br> *ROHi_HGDP*: ROH islands
-of all the individuals of the HGDP organized by continental region.
-<br><br> *RHZ_HGDP*: Runs of heterozygosity of all the individuals of
-the HGDP organized by continental region.
+This package includes different datasets based on the [Human Genome
+Diversity
+Pproject](https://www.internationalgenome.org/data-portal/data-collection/hgdp).
+<br><br> ![Human Genome Diversity Project](man/figures/fig_7.jpg)
+<br><br> *HGDP_hom*: .hom file with the PLINK’s ROH analysis of 54
+populations belonging to the <br><br> *HGDP_pops*: classification in
+populations for all the individuals belonging to the HGDP. <br><br>
+*HGDP_cont*: classification in continents for all the individuals
+belonging to the HGDP <br><br> *HGDP_het*: average FIS estimates for
+each individual in the HGD dataset: <br><br> *HGDP_cl_Africa*: PLINKs
+.hom file obtained using Human Genome Diversity Panel. Cluster Africa.
+<br><br> *HGDP_cl_EastAsia*: PLINKs .hom file obtained using Human
+Genome Diversity Panel. Cluster East Asia. <br><br> *HGDP_cl_Europe*:
+PLINKs .hom file obtained using Human Genome Diversity Panel. Cluster
+Europe. <br><br> *HGDP_cl_MiddleEast*: PLINKs .hom file obtained using
+Human Genome Diversity Panel. Middle East. <br><br> *ROHi_HGDP*: ROH
+islands of all the individuals of the HGDP organized by continental
+region. <br><br> *RHZ_HGDP*: Runs of heterozygosity of all the
+individuals of the HGDP organized by continental region.
 
 ## Processing .hom files
 
@@ -288,8 +289,9 @@ BiocManager::install("biomaRt")
     ##   packages:
     ##     foreign, KernSmooth, lattice, mgcv, nlme, rpart, spatial, survival
 
-    ## Old packages: 'curl', 'dplyr', 'fansi', 'htmltools', 'lme4', 'lubridate',
-    ##   'Matrix', 'plyr', 'pROC', 'rlang', 'stringi', 'utf8', 'vctrs', 'VGAM', 'xfun'
+    ## Old packages: 'curl', 'dplyr', 'fansi', 'htmltools', 'httr2', 'lme4',
+    ##   'lubridate', 'Matrix', 'plyr', 'pROC', 'rlang', 'stringi', 'stringr', 'utf8',
+    ##   'vctrs', 'VGAM', 'xfun'
 
 Once package biomaRt has been installed it is possible to run the
 function **get_Prot**
