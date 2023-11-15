@@ -236,6 +236,20 @@
 #' }
 "COVID_ID"
 
+#' Protein coding genes in COVID ROHi
+#'
+#' This dataset contains the protein coding genes found in the ROH islands of the COVID 19 dataset
+#' @format A data frame with 153 rows and 7 variables.
+#' \describe{
+#'   \item{ensembl_gene_id}{Gene ID Ensembl format}
+#'   \item{chromosome_name}{Chromosome number}
+#'   \item{start_position}{start of the gene}
+#'   \item{end_position}{end of the gene}
+#'   \item{gene_biotype}{gene type_ protein coding gene}
+#'   \item{external_gene_name}{gene name}
+#'   \item{description}{description of the gene}
+#' }
+"COVID_genes"
 
 
 
