@@ -818,5 +818,28 @@ get_Prot<-function(DATA){
   return(genes)
 }
 ################################
+##############################
+#' INBREEDING DEPRESSION: BINOMIAL DEPENDENT VARIABLE.
+#'
+#' The purpose of this function is to calculate the inbreeding depression of a dichotomous dependent trait with multiple independent variables of any nature.
+#' The inbreeding depression is given as an odds ratio (OR).
+#' @param form model formula. For example: `dep_var~indep_var1+indep_var2+indep_var3`.
+#' @param df D.B_Final database obtained from the data incorporation step.
+#' @return A table with the Odds ratio, its 95% CI and the associated p-value.
+#' @export
+#' @examples
+#' # Basic Usage of Multivariable logistic regression.
+#' in_dep_log(a1hosp~Froh+Fhat1+age+pc1+pc2+pc3+pc4+pc5+pc6+pc7+pc8+pc9+pc10,COVID_ID)
+#'
+in_dep_log<-function(form,df){
+  mod<- glm(formula(form),dat = df, family = binomial)
+  t1<-exp(cbind(OR = coef(mod), confint(mod)))
+  p_val<-summary(mod);p_val<-p_val$coefficients[,4]
+  x<-data.frame(cbind(t1,p_val))
+  x$prob<-x[,1]/(1+x[,1])
+  colnames(x)<-c("OR","CI_min","CI_max","P_val","Probablity")
+  return(x)
+}
+#####################################
 #library(roxygen2)
 #roxygenise()
