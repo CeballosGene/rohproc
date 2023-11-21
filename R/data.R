@@ -236,6 +236,19 @@
 #' }
 "COVID_ID"
 
+#' ROH islands in COVID ROHi
+#'
+#' This dataset contains the protein coding genes found in the ROH islands of the COVID 19 dataset
+#' @format A data frame with 153 rows and 7 variables.
+#' \describe{
+#'   \item{Chr}{Chromosome number}
+#'   \item{Start}{start of the ROH island}
+#'   \item{End}{end of the ROH island}
+#'   \item{N_Individuals}{number of individuals}
+#'   \item{Lenght}{length of the ROHisland}
+#' }
+"COVID_ROHi"
+
 #' Protein coding genes in COVID ROHi
 #'
 #' This dataset contains the protein coding genes found in the ROH islands of the COVID 19 dataset
