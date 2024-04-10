@@ -77,7 +77,35 @@ roh_summ_pop<-function(data_1,data_2){
   mer<-as.data.frame(mer)
   return(mer)
 }
-##############################
+#########################################
+#' Summarize by Population, Short version
+#'
+#'This function summarize all the outcome of ```roh_summ_id()``` by population.
+#' @param data_1 The outcome of the function ```roh_summ_id()```.
+#' @param data_2 A file with two columns: "IID", "pop". pop must contain each individual's population
+#' @return A data frame with different variables summarize for each population.
+#' @export
+#' @examples
+#' # Summarizing ROH variables:
+#' rohsum<-roh_summ_id(HGDP_hom)
+#' roh_summ_pop_short(rohsum,HGDP_pops)
+#'
+roh_summ_pop_short<-function(data_1,data_2){
+  mer<-merge(data_1,data_2,by="IID") |>
+    dplyr::group_by(pop)|>
+    dplyr::summarise(Number=length(IID),
+                     mean_Froh=mean(Froh),
+                     sd_Froh=sd(Froh),
+                     median_Froh=median(Froh),
+                     iqr_Froh=IQR(Froh),
+                     mean_Foutroh=mean(Froh),
+                     sd_Foutroh=sd(Foutroh),
+                     median_Foutroh=median(Foutroh),
+                     iqr_Foutroh=IQR(Foutroh))
+  mer<-as.data.frame(mer)
+  return(mer)
+}
+#########################################
 #' Summarize by Continent
 #'
 #'This function summarize all the outcome of ```roh_summ_id()``` by continent.
