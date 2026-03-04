@@ -94,14 +94,14 @@ roh_summ_pop_short<-function(data_1,data_2){
   mer<-merge(data_1,data_2,by="IID") |>
     dplyr::group_by(pop)|>
     dplyr::summarise(Number=length(IID),
-                     mean_Froh=mean(Froh),
+                     m_Froh=mean(Froh),
                      sd_Froh=sd(Froh),
-                     median_Froh=median(Froh),
+                     me_Froh=median(Froh),
                      iqr_Froh=IQR(Froh),
-                     mean_Foutroh=mean(Froh),
-                     sd_Foutroh=sd(Foutroh),
-                     median_Foutroh=median(Foutroh),
-                     iqr_Foutroh=IQR(Foutroh))
+                     m_Foroh=mean(Froh),
+                     sd_Foroh=sd(Foutroh),
+                     me_Foroh=median(Foutroh),
+                     iqr_Foroh=IQR(Foutroh))
   mer<-as.data.frame(mer)
   return(mer)
 }
@@ -363,65 +363,221 @@ poisson.roh_island<-function(pop,chr,p1,p2){
   return(n)
 }
 ##############################
-#' Islands of ROH
+#' Islands of ROH (improved)
 #'
-#'This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
-#'The resolution of the analysis is 10,000 bp: 10kb.
-#' @param POP A .hom file from PLINK with all the individuals belonging to the same group or population.
-#' @param ChroNumber Chromosome number.
-#' @param population Name of the population in quotation marks ("").
-#' @return A table with the ROH islands.
+#' Searches for ROH islands in a population by scanning fixed windows along a chromosome,
+#' testing window counts against a Poisson null (lambda = genome-wide mean), applying
+#' Bonferroni correction, and merging consecutive significant windows into islands.
+#'
+#' @param POP A PLINK .hom table/data.frame with individuals from one population.
+#' @param ChroNumber Chromosome number (1-22).
+#' @param population Population name (character).
+#' @param SizeWindow Window size in bp (default 10,000).
+#' @param lenChro Optional chromosome length in bp. If NULL, uses internal approximate lengths.
+#' @param alpha Family-wise error rate for Bonferroni (default 0.05).
+#' @param min_windows Minimum consecutive significant windows to report an island (default 1).
+#' @param start_pos Start position (1-based) for scanning (default 1).
+#' @param end_pos End position for scanning (default chr_len).
+#'
+#' @return A data.frame with ROH islands (Chr, Start, End, Length, N_Individuals, P_Individuals, Population).
 #' @export
-#' @examples
-#' # Obtaining ROH islands for a group of individuals:
-#' get_RHOi(HGDP_cl_Africa,1,"Africa")
-#'
-get_RHOi<-function(POP,ChroNumber,population){
-  SizeWindow=10000
-  if(ChroNumber==1){lenChro=250000000}
-  if(ChroNumber==2){lenChro=250000000}
-  if(ChroNumber==3){lenChro=200000000}
-  if(ChroNumber==4){lenChro=191000000}
-  if(ChroNumber==5){lenChro=182000000}
-  if(ChroNumber==6){lenChro=171000000}
-  if(ChroNumber==7){lenChro=160000000}
-  if(ChroNumber==8){lenChro=146000000}
-  if(ChroNumber==9){lenChro=139000000}
-  if(ChroNumber==10){lenChro=133900000}
-  if(ChroNumber==11){lenChro=136000000}
-  if(ChroNumber==12){lenChro=134000000}
-  if(ChroNumber==13){lenChro=115000000}
-  if(ChroNumber==14){lenChro=108000000}
-  if(ChroNumber==15){lenChro=102000000}
-  if(ChroNumber==16){lenChro=91000000}
-  if(ChroNumber==17){lenChro=84000000}
-  if(ChroNumber==18){lenChro=81000000}
-  if(ChroNumber==19){lenChro=59000000}
-  if(ChroNumber==20){lenChro=64000000}
-  if(ChroNumber==21){lenChro=49000000}
-  if(ChroNumber==22){lenChro=52000000}
-  data.n = apply(data.frame(seq(0,lenChro-SizeWindow,SizeWindow), seq(SizeWindow,lenChro,SizeWindow)), MARGIN=1,
-                 function(x,y,z,a) poisson.roh_island(POP, ChroNumber, x[1], x[2]))
-  data.p = apply(data.frame(seq(0,lenChro-SizeWindow,SizeWindow), seq(SizeWindow,lenChro,SizeWindow)), MARGIN=1,
-                 function(x,y,z,a) roh_island(POP, ChroNumber, x[1], x[2]))
-  av<-mean(data.n)
-  pval<-ppois(data.n,lambda=av,lower=FALSE)
-  x<-seq(1:round(lenChro/SizeWindow))
-  pos<-(x*SizeWindow)
-  prop<-data.p*100
-  data<-data.frame(cbind(x,data.n,prop,pos,pval))
-  data.p<-subset(data,data$pval<=0.05/(lenChro/SizeWindow))
-  data.re<-data.p |> dplyr::group_by(new=cumsum(c(1,diff(x)!=1))) |>
-    dplyr::summarise(pos1=min(pos),pos2=max(pos),n.ind=mean(data.n),per.ind=mean(prop))
-  Chr<-rep(ChroNumber,length(data.re$pos1))
-  ROHi<-data.frame(cbind(Chr,data.re))
-  ROHi<-dplyr::mutate(ROHi,len=(pos2-pos1)/1000000)
-  ROHi<-dplyr::mutate(ROHi,pop=rep(population,length(ROHi$Chr)))
-  ROHi<-dplyr::select(ROHi,Chr,pos1,pos2,len,n.ind,per.ind,pop)
-  colnames(ROHi)<-c("Chr","Start","End","Length","N_Individuals","P_Individuals","Population")
-  ROHi<-subset(ROHi,ROHi$Length>0)
-  return(ROHi)
+get_RHOi <- function(POP, ChroNumber, population,
+                     SizeWindow = 10000,
+                     lenChro = NULL,
+                     alpha = 0.05,
+                     min_windows = 1,
+                     start_pos = 1,
+                     end_pos = NULL) {
+
+  # --- checks ---
+  if (!is.numeric(ChroNumber) || length(ChroNumber) != 1 || is.na(ChroNumber))
+    stop("ChroNumber must be a single number.")
+  if (ChroNumber < 1 || ChroNumber > 22)
+    stop("ChroNumber must be between 1 and 22.")
+  if (!is.character(population) || length(population) != 1)
+    stop("population must be a single character string.")
+  if (!is.numeric(SizeWindow) || SizeWindow <= 0)
+    stop("SizeWindow must be > 0.")
+  if (!is.numeric(alpha) || alpha <= 0 || alpha >= 1)
+    stop("alpha must be in (0,1).")
+  if (!is.numeric(min_windows) || min_windows < 1)
+    stop("min_windows must be >= 1.")
+
+  # --- normalize column names once (avoid repeating inside helpers) ---
+  POP <- as.data.frame(POP)
+  names(POP) <- tolower(names(POP))
+
+  needed <- c("chr", "pos1", "pos2", "iid")
+  miss <- setdiff(needed, names(POP))
+  if (length(miss) > 0)
+    stop("POP is missing required columns: ", paste(miss, collapse = ", "))
+
+  # --- chromosome length ---
+  if (is.null(lenChro)) {
+    chr_len_map <- c(
+      `1`=250000000, `2`=250000000, `3`=200000000, `4`=191000000, `5`=182000000,
+      `6`=171000000, `7`=160000000, `8`=146000000, `9`=139000000, `10`=133900000,
+      `11`=136000000, `12`=134000000, `13`=115000000, `14`=108000000, `15`=102000000,
+      `16`= 91000000, `17`= 84000000, `18`= 81000000, `19`= 59000000, `20`= 64000000,
+      `21`= 49000000, `22`= 52000000
+    )
+    lenChro <- unname(chr_len_map[as.character(ChroNumber)])
+    if (is.na(lenChro)) stop("Could not determine chromosome length.")
+  }
+
+  if (is.null(end_pos)) end_pos <- lenChro
+  start_pos <- max(1L, as.integer(start_pos))
+  end_pos   <- min(as.integer(end_pos), as.integer(lenChro))
+  if (start_pos >= end_pos) stop("start_pos must be < end_pos.")
+
+  # --- subset to chromosome once (big speedup) ---
+  a <- POP[POP$chr == ChroNumber, , drop = FALSE]
+  if (nrow(a) == 0) {
+    return(data.frame(
+      Chr=integer(), Start=integer(), End=integer(), Length=numeric(),
+      N_Individuals=numeric(), P_Individuals=numeric(), Population=character()
+    ))
+  }
+  Ntot <- length(unique(POP$iid))  # denominator used by your roh_island()
+
+  # --- windows (1-based, inclusive) ---
+  starts <- seq(from = start_pos, to = end_pos - SizeWindow + 1, by = SizeWindow)
+  ends   <- starts + SizeWindow - 1
+  nW <- length(starts)
+  if (nW < 1) stop("No windows produced. Check start_pos/end_pos/SizeWindow.")
+
+  # --- compute counts per window: unique IIDs whose ROH fully covers the window ---
+  # Avoid calling two helper functions; compute counts once, derive proportions.
+  data.n <- vapply(seq_len(nW), function(i) {
+    s <- starts[i]; e <- ends[i]
+    island <- a[a$pos1 <= s & a$pos2 >= e, , drop = FALSE]
+    length(unique(island$iid))
+  }, integer(1))
+
+  prop <- (data.n / Ntot) * 100
+
+  # --- Poisson enrichment test ---
+  lambda <- mean(data.n)
+
+  # ppois(k-1, lower.tail=FALSE) = P(X >= k)
+  pval <- stats::ppois(data.n - 1, lambda = lambda, lower.tail = FALSE)
+
+  df <- data.frame(
+    x = seq_len(nW),
+    Start = starts,
+    End = ends,
+    N = data.n,
+    P = prop,
+    pval = pval
+  )
+
+  thr <- alpha / nW
+  sig <- df[df$pval <= thr, , drop = FALSE]
+  if (nrow(sig) == 0) {
+    return(data.frame(
+      Chr=integer(), Start=integer(), End=integer(), Length=numeric(),
+      N_Individuals=numeric(), P_Individuals=numeric(), Population=character()
+    ))
+  }
+
+  sig <- sig[order(sig$x), , drop = FALSE]
+
+  ROHi <- sig |>
+    dplyr::group_by(grp = cumsum(c(1, diff(x) != 1))) |>
+    dplyr::summarise(
+      Start = min(Start),
+      End   = max(End),
+      N_Individuals = mean(N),
+      P_Individuals = mean(P),
+      n_windows = dplyr::n(),
+      .groups = "drop"
+    ) |>
+    dplyr::filter(n_windows >= min_windows) |>
+    dplyr::mutate(
+      Chr = ChroNumber,
+      Length = (End - Start) / 1e6,
+      Population = population
+    ) |>
+    dplyr::select(Chr, Start, End, Length, N_Individuals, P_Individuals, Population) |>
+    dplyr::filter(Length > 0)
+
+  ROHi
 }
+
+##############################
+#' ROH deserts (regions outside ROH islands) by fixed prevalence threshold
+#'
+#' @param POP A .hom file/data.frame from PLINK (single population)
+#' @param ChroNumber Chromosome number
+#' @param population Name of the population
+#' @param thr Fixed threshold on prevalence (fraction). Example: 0.01 = 1% of individuals
+#' @param SizeWindow Window size (bp), default 10kb
+#' @param lenChro Optional chromosome length (bp). If NULL uses your internal table
+#' @param min_windows Minimum consecutive windows to report a region
+#' @return A table of ROH desert regions
+#' @export
+get_ROH_deserts <- function(POP, ChroNumber, population,
+                            thr = 0.01, SizeWindow = 10000,
+                            lenChro = NULL, min_windows = 1) {
+
+  # Chromosome lengths (keep yours; better would be build-specific)
+  if (is.null(lenChro)) {
+    chr_len <- c(
+      `1`=250000000, `2`=250000000, `3`=200000000, `4`=191000000, `5`=182000000,
+      `6`=171000000, `7`=160000000, `8`=146000000, `9`=139000000, `10`=133900000,
+      `11`=136000000, `12`=134000000, `13`=115000000, `14`=108000000, `15`=102000000,
+      `16`= 91000000, `17`= 84000000, `18`= 81000000, `19`= 59000000, `20`= 64000000,
+      `21`= 49000000, `22`= 52000000
+    )
+    lenChro <- unname(chr_len[as.character(ChroNumber)])
+  }
+
+  starts <- seq(1, lenChro - SizeWindow + 1, by = SizeWindow)
+  ends   <- starts + SizeWindow - 1
+  nW <- length(starts)
+
+  # prevalence per window (fraction)
+  prop_frac <- mapply(function(s,e) roh_island(POP, ChroNumber, s, e), starts, ends)
+
+  df <- data.frame(
+    x = seq_len(nW),
+    Start = starts,
+    End = ends,
+    Prop = prop_frac * 100,         # %
+    PropFrac = prop_frac            # fraction
+  )
+
+  # select "outside" windows
+  out <- df[df$PropFrac <= thr, , drop = FALSE]
+  if (nrow(out) == 0) {
+    return(data.frame(
+      Chr=integer(), Start=integer(), End=integer(), Length=numeric(),
+      P_Individuals=numeric(), Population=character()
+    ))
+  }
+
+  # merge consecutive windows
+  merged <- out |>
+    dplyr::arrange(x) |>
+    dplyr::group_by(grp = cumsum(c(1, diff(x) != 1))) |>
+    dplyr::summarise(
+      Start = min(Start),
+      End   = max(End),
+      P_Individuals = mean(Prop),        # mean prevalence (%) across windows
+      n_windows = dplyr::n(),
+      .groups = "drop"
+    ) |>
+    dplyr::filter(n_windows >= min_windows) |>
+    dplyr::mutate(
+      Chr = ChroNumber,
+      Length = (End - Start) / 1e6,
+      Population = population
+    ) |>
+    dplyr::select(Chr, Start, End, Length, P_Individuals, Population)
+
+  merged
+}
+
 ################################
 #' Summarize ROHi by Population and by folder
 #'

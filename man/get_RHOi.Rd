@@ -2,26 +2,44 @@
 % Please edit documentation in R/FUNCT.R
 \name{get_RHOi}
 \alias{get_RHOi}
-\title{Islands of ROH}
+\title{Islands of ROH (improved)}
 \usage{
-get_RHOi(POP, ChroNumber, population)
+get_RHOi(
+  POP,
+  ChroNumber,
+  population,
+  SizeWindow = 10000,
+  lenChro = NULL,
+  alpha = 0.05,
+  min_windows = 1,
+  start_pos = 1,
+  end_pos = NULL
+)
 }
 \arguments{
-\item{POP}{A .hom file from PLINK with all the individuals belonging to the same group or population.}
+\item{POP}{A PLINK .hom table/data.frame with individuals from one population.}
 
-\item{ChroNumber}{Chromosome number.}
+\item{ChroNumber}{Chromosome number (1-22).}
 
-\item{population}{Name of the population in quotation marks ("").}
+\item{population}{Population name (character).}
+
+\item{SizeWindow}{Window size in bp (default 10,000).}
+
+\item{lenChro}{Optional chromosome length in bp. If NULL, uses internal approximate lengths.}
+
+\item{alpha}{Family-wise error rate for Bonferroni (default 0.05).}
+
+\item{min_windows}{Minimum consecutive significant windows to report an island (default 1).}
+
+\item{start_pos}{Start position (1-based) for scanning (default 1).}
+
+\item{end_pos}{End position for scanning (default chr_len).}
 }
 \value{
-A table with the ROH islands.
+A data.frame with ROH islands (Chr, Start, End, Length, N_Individuals, P_Individuals, Population).
 }
 \description{
-This script searches for ROH islands in a population. The script may take some time to finish the 22 Chr.
-The resolution of the analysis is 10,000 bp: 10kb.
-}
-\examples{
-# Obtaining ROH islands for a group of individuals:
-get_RHOi(HGDP_cl_Africa,1,"Africa")
-
+Searches for ROH islands in a population by scanning fixed windows along a chromosome,
+testing window counts against a Poisson null (lambda = genome-wide mean), applying
+Bonferroni correction, and merging consecutive significant windows into islands.
 }
